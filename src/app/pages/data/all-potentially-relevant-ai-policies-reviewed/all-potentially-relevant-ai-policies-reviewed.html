@@ -1,0 +1,99 @@
+<div class="policy-analysis-container">
+  <h2>Table A: All Potentially Relevant AI Policies Reviewed</h2>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner></mat-spinner>
+      <p>Loading policy data...</p>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (error() && !loading()) {
+    <div class="error-state">
+      <p>{{ error() }}</p>
+      <button mat-raised-button (click)="loadData()">Retry</button>
+    </div>
+  }
+
+  <!-- Data table -->
+  @if (data() && !loading()) {
+    <div class="table-section">
+      <!-- Controls -->
+      <div class="table-controls">
+        <div class="control-group">
+          <h3>Columns ({{ visibleColumns().length }}/{{ data()!.columns.length }})</h3>
+          <div class="button-group">
+            <button mat-button (click)="toggleAllColumns(true)">Show All</button>
+            <button mat-button (click)="toggleAllColumns(false)">Hide All</button>
+          </div>
+        </div>
+
+        <details class="column-selector">
+          <summary>Customize Columns</summary>
+          <div class="column-grid">
+            @for (column of data()!.columns; track column.id) {
+              <mat-checkbox
+                [checked]="!hiddenColumnIds().has(column.id)"
+                (change)="toggleColumn(column.id)">
+                {{ column.name }}
+              </mat-checkbox>
+            }
+          </div>
+        </details>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="data()?.rows || []" class="mat-elevation-z2">
+
+          <!-- Dynamic Column Definitions -->
+          @for (column of visibleColumns(); track column.id) {
+            <ng-container [matColumnDef]="column.name">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-content">
+                  <span>{{ column.name }}</span>
+                  <button mat-icon-button
+                          (click)="toggleColumn(column.id)"
+                          title="Hide this column">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </th>
+
+              <td mat-cell *matCellDef="let row">
+                @if (!isLink(column)) {
+                  {{ formatCellValue(getCellValue(row, column.name), column) }}
+                }
+
+                @if (isLink(column) && getCellValue(row, column.name)) {
+                  <a [href]="getCellValue(row, column.name)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    mat-button
+                    color="primary">
+                    View Link
+                  </a>
+                }
+
+                @if (isLink(column) && !getCellValue(row, column.name)) {
+                  <span>-</span>
+                }
+              </td>
+            </ng-container>
+          }
+
+          <!-- Header and Row Definitions (REQUIRED!) -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns(); sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
+        </table>
+      </div>
+
+      <!-- Summary -->
+      <div class="table-summary">
+        <p>Showing {{ data()!.rows.length }} rows with {{ visibleColumns().length }} columns</p>
+      </div>
+    </div>
+  }
+</div>
