@@ -43,7 +43,6 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class AppComponent {
   title = 'Education and AI Policy Commons';
-
   private router = inject(Router);
 
   navigateToWelcome() {
