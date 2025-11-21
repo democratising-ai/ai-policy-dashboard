@@ -9,8 +9,8 @@
 html {
   @include mat.theme((
     color: (
-      primary: mat.$rose-palette,
-      tertiary: mat.$red-palette,
+      primary: mat.m2-define-palette(mat.$m2-grey-palette, 900),
+      tertiary: mat.m2-define-palette(mat.$m2-grey-palette, 50),
     ),
     typography: Roboto,
     density: 0,

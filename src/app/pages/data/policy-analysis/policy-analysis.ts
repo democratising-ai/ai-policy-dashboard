@@ -1,11 +1,16 @@
 // policy-analysis.ts
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableDataSource } from '@angular/material/table';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
+import { ViewChild } from '@angular/core';
 import { PolicyDataService } from '../../../services/data.service';
 import { FlexibleTableData, FlexibleColumn } from '../../../services/data.models';
 
@@ -18,15 +23,21 @@ import { FlexibleTableData, FlexibleColumn } from '../../../services/data.models
     MatButtonModule,
     MatCheckboxModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule,
+    MatPaginatorModule
   ],
   templateUrl: './policy-analysis.html',
   styleUrl: './policy-analysis.css'
 })
-export class PolicyAnalysisComponent implements OnInit {
+export class PolicyAnalysisComponent implements OnInit, AfterViewInit {
   private policyDataService = inject(PolicyDataService);
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // Signals
   data = signal<FlexibleTableData | null>(null);
+  dataSource = new MatTableDataSource<any>([]);
   hiddenColumnIds = signal(new Set<string>());
   loading = signal(true);
   error = signal<string | null>(null);
@@ -42,6 +53,10 @@ export class PolicyAnalysisComponent implements OnInit {
     this.loadData();
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+  }
+
   loadData() {
     this.loading.set(true);
     this.error.set(null);
@@ -49,6 +64,7 @@ export class PolicyAnalysisComponent implements OnInit {
     this.policyDataService.getData().subscribe({
       next: (data) => {
         this.data.set(data);
+        this.dataSource.data = data.rows;
         this.loading.set(false);
       },
       error: (err) => {
@@ -118,5 +134,9 @@ export class PolicyAnalysisComponent implements OnInit {
 
   trackByRowId(index: number, row: any): string {
     return row.id;
+  }
+
+  getRowTooltip(row: any): string {
+    return JSON.stringify(row.values, null, 2);
   }
 }

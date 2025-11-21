@@ -46,7 +46,13 @@
 
       <!-- Table -->
       <div class="table-wrapper">
-        <table mat-table [dataSource]="data()?.rows || []" class="mat-elevation-z2">
+        <mat-paginator
+          [pageSizeOptions]="[10, 25, 50, 100]"
+          [pageSize]="25"
+          showFirstLastButtons
+          aria-label="Select page">
+        </mat-paginator>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
 
           <!-- Dynamic Column Definitions -->
           @for (column of visibleColumns(); track column.id) {
@@ -86,13 +92,18 @@
 
           <!-- Header and Row Definitions (REQUIRED!) -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns(); sticky: true"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
+          <tr mat-row
+            *matRowDef="let row; columns: displayedColumns();"
+            [matTooltip]="getRowTooltip(row)"
+            matTooltipPosition="right"
+            matTooltipClass="custom-tooltip">
+          </tr>
         </table>
       </div>
 
       <!-- Summary -->
       <div class="table-summary">
-        <p>Showing {{ data()!.rows.length }} rows with {{ visibleColumns().length }} columns</p>
+        <p>Showing {{ dataSource.data.length }} rows with {{ visibleColumns().length }} columns</p>
       </div>
     </div>
   }

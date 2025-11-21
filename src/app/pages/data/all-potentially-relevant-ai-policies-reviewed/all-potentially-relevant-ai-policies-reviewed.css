@@ -1,16 +1,9 @@
-/* policy-analysis.css */
 .policy-analysis-container {
-  padding: 1.5rem;
+  padding: 0rem !important;
   max-width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-h2 {
-  margin: 0 0 1.5rem 0;
-  color: #333;
-  font-size: 1.75rem;
 }
 
 /* Loading and Error States */
@@ -333,7 +326,7 @@ h2 {
   width: 16px !important;
   height: 16px !important;
   line-height: 1 !important;
-  background: #825151 !important;
+  background: #ee5252 !important;
   color: rgb(0, 0, 0) !important;
   border-radius: 2px !important;
   min-width: 16px !important;
@@ -354,10 +347,8 @@ h2 {
 .policy-analysis-container {
   padding: 1rem;
   max-width: 100%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .table-section {

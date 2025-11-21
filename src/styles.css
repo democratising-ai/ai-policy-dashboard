@@ -1,4 +1,54 @@
-/* You can add global styles to this file, and also import other style files
-
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.info-card-overlay {
+  z-index: 1000;
+}
+
+.hoverable-row {
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.hoverable-row:hover {
+  background: #f0f8ff !important;
+}
+
+.table-controls {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.control-group {
+  margin-bottom: 0 !important;
+}
+
+.table-section {
+  gap: 0 !important;
+  padding-right: 1.5vh !important;
+}
+
+.table-wrapper {
+  overflow: hidden;
+  max-height: 87vh;
+}
+
+.table-summary {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+h2 {
+  margin: 1rem;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.mat-mdc-paginator-container {
+  min-height: auto !important;
+}
+
+.mat-mdc-card {
+  width: 80% !important;
+  margin: auto !important;
+  margin-top: 4vh !important;
+}

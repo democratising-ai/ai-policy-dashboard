@@ -4,23 +4,14 @@
     <mat-nav-list>
       <h3 mat-subheader>Navigation</h3>
 
-      <!-- Welcome with Dropdown Trigger -->
-      <mat-list-item [matMenuTriggerFor]="welcomeMenu" class="welcome-menu-trigger" tabindex="0" role="button" aria-haspopup="true">
+      <!-- Welcome Page Link -->
+      <mat-list-item [routerLink]="'/'" routerLinkActive="active" class="welcome-menu-trigger" tabindex="0" role="button">
         <mat-icon matListItemIcon>home</mat-icon>
         <span matListItemTitle>Welcome</span>
       </mat-list-item>
 
-      <mat-menu #welcomeMenu="matMenu">
-        <button mat-menu-item [routerLink]="'/'" [routerLinkActive]="'active'" [routerLinkActiveOptions]="{exact: true}">
-          Welcome Page
-        </button>
-        <button mat-menu-item [routerLink]="'/tips'" routerLinkActive="active">
-          Tips
-        </button>
-      </mat-menu>
-
       <!-- Dashboard Menu -->
-      <mat-list-item [matMenuTriggerFor]="dashboardMenu" class="dashboard-menu-trigger">
+      <!-- <mat-list-item [matMenuTriggerFor]="dashboardMenu" class="dashboard-menu-trigger">
         <mat-icon matListItemIcon>dashboard</mat-icon>
         <span matListItemTitle>Dashboards</span>
       </mat-list-item>
@@ -33,7 +24,7 @@
         <button mat-menu-item [routerLink]="'/dashboards/opportunity-risk'">Opportunity and Risk Focus</button>
         <button mat-menu-item [routerLink]="'/dashboards/principles'">Principles Expressed</button>
         <button mat-menu-item [routerLink]="'/dashboards/essential-reading'">Essential Reading</button>
-      </mat-menu>
+      </mat-menu> -->
 
       <!-- Data Menu -->
       <mat-list-item [matMenuTriggerFor]="dataMenu" class="data-menu-trigger" tabindex="0" role="button" aria-haspopup="true">
@@ -42,12 +33,12 @@
       </mat-list-item>
 
       <mat-menu #dataMenu="matMenu">
-        <button mat-menu-item [routerLink]="'/data/relevance-assessment'" routerLinkActive="active">
+        <!-- <button mat-menu-item [routerLink]="'/data/relevance-assessment'" routerLinkActive="active">
           Relevance Assessment Tables
-        </button>
-        <button mat-menu-item [routerLink]="'/data/lookup-tables'" routerLinkActive="active">
+        </button> -->
+        <!-- <button mat-menu-item [routerLink]="'/data/lookup-tables'" routerLinkActive="active">
           Lookup Tables (Select Options)
-        </button>
+        </button> -->
         <button mat-menu-item [routerLink]="'/data/all-potentially-relevant-ai-policies-reviewed'" routerLinkActive="active">
           Table A. All Potentially Relevant AI Policies Reviewed
         </button>
@@ -59,9 +50,6 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <span>Education and AI Policy Commons</span>
-    </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

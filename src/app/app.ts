@@ -33,7 +33,7 @@ import { MatMenuModule } from '@angular/material/menu';
     }
 
     mat-sidenav-content {
-      padding: 20px;
+      padding: 0.2vh;
     }
 
     .active {
