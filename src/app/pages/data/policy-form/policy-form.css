@@ -1,0 +1,131 @@
+/* Policy Form - Single column compact layout */
+
+.form-container {
+  padding: 12px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+mat-card {
+  width: auto !important;
+  margin-bottom: 12px;
+}
+
+mat-card-header {
+  margin-bottom: 12px;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+}
+
+.auth-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  font-size: 0.8rem;
+}
+
+.auth-status.authenticated {
+  background-color: #d4edda;
+  border-color: #28a745;
+}
+
+.auth-status .logout-btn {
+  margin-left: auto;
+  font-size: 0.75rem;
+  padding: 0 8px;
+  min-width: auto;
+  height: 28px;
+  line-height: 28px;
+}
+
+.auth-status .logout-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 10px;
+}
+
+/* Single column form grid */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-form-field.required mat-label::after {
+  content: ' *';
+  color: red;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.checkbox-field mat-checkbox {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.form-actions button {
+  font-size: 0.8rem;
+}
+
+.button-spinner {
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Compact textarea */
+mat-form-field textarea {
+  min-height: 50px;
+  resize: vertical;
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 10px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

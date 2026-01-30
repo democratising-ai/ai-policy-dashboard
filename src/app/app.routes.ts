@@ -1,4 +1,3 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
 import { WelcomeComponent } from './pages/welcome.component';
 import { TipsComponent } from './pages/tips.component';
@@ -16,6 +15,8 @@ import { RelevanceAssessmentComponent } from './pages/data/relevance-assessment/
 import { LookupTablesComponent } from './pages/data/lookup-tables/lookup-tables';
 import { PolicyAnalysisComponent } from './pages/data/policy-analysis/policy-analysis';
 import { TableAComponent } from './pages/data/all-potentially-relevant-ai-policies-reviewed/all-potentially-relevant-ai-policies-reviewed';
+import { PolicyFormComponent } from './pages/data/policy-form/policy-form';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: WelcomeComponent },
@@ -30,7 +31,8 @@ export const routes: Routes = [
       { path: 'governance-practices', component: GovernancePracticesComponent },
       { path: 'opportunity-risk', component: OpportunityRiskComponent },
       { path: 'principles', component: PrinciplesComponent },
-      { path: 'essential-reading', component: EssentialReadingComponent }
+      { path: 'essential-reading', component: EssentialReadingComponent },
+      { path: '', redirectTo: 'all-policies', pathMatch: 'full' }
     ]
   },
   {
@@ -39,10 +41,12 @@ export const routes: Routes = [
     children: [
       { path: 'relevance-assessment', component: RelevanceAssessmentComponent },
       { path: 'lookup-tables', component: LookupTablesComponent },
-      { path: 'all-potentially-relevant-ai-policies-reviewed', component: TableAComponent }, // ADD THIS LINE
+      { path: 'all-potentially-relevant-ai-policies-reviewed', component: TableAComponent },
       { path: 'policy-analysis', component: PolicyAnalysisComponent },
+      { path: 'policy-form/:table', component: PolicyFormComponent, canActivate: [authGuard] },
       { path: '', redirectTo: 'relevance-assessment', pathMatch: 'full' }
     ]
   },
-  { path: 'ai-principles', component: AIPrinciplesComponent }
+  { path: 'ai-principles', component: AIPrinciplesComponent },
+  { path: '**', redirectTo: '' }
 ];

@@ -5,9 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { DataService } from '../../services/data.service';
-import { FlexibleTableData } from '../../services/data.models';
-import { Observable } from 'rxjs';
-import { PolicyDataService } from '../../services/data.service';
+import { PolicyDataService } from '../../services/policy-data.service';
 import { RouterModule, RouterOutlet  } from "@angular/router";
 
 @Component ({

@@ -1,5 +1,4 @@
 import { Component, computed, inject, OnInit, signal, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -9,39 +8,47 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatPaginator } from '@angular/material/paginator';
+import { RouterLink } from '@angular/router';
 import { ViewChild } from '@angular/core';
-import { PolicyDataService } from '../../../services/data.service';
+import { PolicyDataService } from '../../../services/policy-data.service';
 import { FlexibleTableData, FlexibleColumn } from '../../../services/data.models';
+import { TableSortService } from '../../../services/table-sort.service';
+import { RowInfoCardService } from '../../../services/row-info-card.service';
+import { InputSanitizerService } from '../../../services/input-sanitizer.service';
 
 @Component({
   selector: 'app-table-a',
   standalone: true,
   imports: [
-    CommonModule,
     MatTableModule,
     MatProgressSpinnerModule,
     MatButtonModule,
     MatCheckboxModule,
     MatIconModule,
     MatTooltipModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    RouterLink
   ],
   templateUrl: './all-potentially-relevant-ai-policies-reviewed.html',
   styleUrl: './all-potentially-relevant-ai-policies-reviewed.css'
 })
 export class TableAComponent implements OnInit, AfterViewInit {
   private policyDataService = inject(PolicyDataService);
+  private tableSortService = inject(TableSortService);
+  private rowInfoCardService = inject(RowInfoCardService);
+  private sanitizer = inject(InputSanitizerService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  // Signals
   data = signal<FlexibleTableData | null>(null);
   dataSource = new MatTableDataSource<any>([]);
+  private originalData: any[] = [];
   hiddenColumnIds = signal(new Set<string>());
   loading = signal(true);
   error = signal<string | null>(null);
+  sortColumn = signal<string | null>(null);
+  sortDirection = signal<'asc' | 'desc' | null>(null);
 
-  // Computed
   visibleColumns = computed(() => {
     const tableData = this.data();
     const hidden = this.hiddenColumnIds();
@@ -61,21 +68,19 @@ export class TableAComponent implements OnInit, AfterViewInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.policyDataService.getData('tableA').subscribe({
-      next: (data) => {
-        this.data.set(data);
-        this.dataSource.data = data.rows;
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Failed to load data');
-        this.loading.set(false);
-        console.error('Error loading data:', err);
-      }
-    });
+    const data = this.policyDataService.getData('tableA');
+    this.data.set(data);
+    this.originalData = [...data.rows]; // Store original data
+    this.dataSource.data = data.rows;
+    this.applySorting();
+    this.loading.set(false);
   }
 
-  toggleColumn(columnId: string) {
+  toggleColumn(columnId: string, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
     const current = new Set(this.hiddenColumnIds());
     if (current.has(columnId)) {
       current.delete(columnId);
@@ -94,8 +99,60 @@ export class TableAComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getCellValue(row: any, columnId: string): any {
-    return row.values[columnId];
+  getCellValue(row: any, columnName: string): any {
+    return this.tableSortService.getCellValue(row, columnName);
+  }
+
+  applySorting() {
+    const sortCol = this.sortColumn();
+    const sortDir = this.sortDirection();
+
+    if (!sortCol || !sortDir) {
+      this.dataSource.sort = null;
+      // Reset to original unsorted order
+      this.dataSource.data = [...this.originalData];
+      return;
+    }
+
+    // Use centralized sorting service on original data
+    const sortedData = this.tableSortService.sortRows(this.originalData, sortCol, sortDir);
+    this.dataSource.data = sortedData;
+  }
+
+  onColumnHeaderClick(column: FlexibleColumn, event: MouseEvent) {
+    // Prevent closing column when clicking to sort
+    if ((event.target as HTMLElement).closest('button')) {
+      return;
+    }
+
+    const columnName = column.name;
+    const currentSortCol = this.sortColumn();
+    const currentSortDir = this.sortDirection();
+
+    // Cycle through: none -> asc -> desc -> none
+    if (currentSortCol !== columnName) {
+      this.sortColumn.set(columnName);
+      this.sortDirection.set('asc');
+    } else if (currentSortDir === 'asc') {
+      this.sortDirection.set('desc');
+    } else if (currentSortDir === 'desc') {
+      this.sortColumn.set(null);
+      this.sortDirection.set(null);
+    }
+
+    this.applySorting();
+  }
+
+  getSortDirection(columnName: string): 'asc' | 'desc' | null {
+    if (this.sortColumn() !== columnName) return null;
+    return this.sortDirection();
+  }
+
+  getSortTooltip(columnName: string): string {
+    const dir = this.getSortDirection(columnName);
+    if (dir === 'asc') return 'Click to sort descending';
+    if (dir === 'desc') return 'Click to clear sort';
+    return 'Click to sort ascending';
   }
 
   formatCellValue(value: any, column: FlexibleColumn): string {
@@ -132,7 +189,13 @@ export class TableAComponent implements OnInit, AfterViewInit {
     return row.id;
   }
 
-  getRowTooltip(row: any): string {
-    return JSON.stringify(row.values, null, 2);
+  getSafeUrl(row: any, columnName: string): string {
+    const value = this.getCellValue(row, columnName);
+    if (!value) return '';
+    return this.sanitizer.sanitizeUrl(String(value));
+  }
+
+  onRowClick(row: any) {
+    this.rowInfoCardService.showCard(row);
   }
 }

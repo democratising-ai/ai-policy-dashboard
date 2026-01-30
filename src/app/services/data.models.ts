@@ -1,4 +1,3 @@
-// services/data.models.ts
 export interface PolicyData {
   id: number;
   title: string;
@@ -12,12 +11,11 @@ export interface EducationData {
   id: number;
   institution: string;
   enrollment: number;
-  aiAdoption: number; // percentage
+  aiAdoption: number;
   budget: number;
   region: string;
 }
 
-// Simplified flexible model
 export interface FlexibleColumn {
   id: string;
   name: string;

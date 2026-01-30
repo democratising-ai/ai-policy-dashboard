@@ -1,59 +1,70 @@
-# ai-policy-dashboard
+# AI Policy Dashboard
+An Angular application for tracking and analyzing AI policies. Supports GitHub-based form submissions that commit directly to the repository.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.3.
+## Development
 
-## Development server
+### Prerequisites
+- Node.js
+- Angular CLI
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new  , run:
-
-```bash
-ng generate    -name
-```
-
-For a complete list of available schematics (such as ` s`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Building
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts are stored in `dist/`.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Development Server
 
 ```bash
-ng test
+ng serve
 ```
 
-## Running end-to-end tests
+Open `http://localhost:4200/`. The app reloads automatically on file changes.
 
-For end-to-end (e2e) testing, run:
+## GitHub API Integration
 
-```bash
-ng e2e
-```
+The app supports GitHub authentication and form submissions that commit directly to the repository, triggering automatic GitHub Pages rebuilds.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Setup of GitHub API
 
-## Additional Resources
+Repository settings are auto-detected from the GitHub Pages URL, or can be configured manually via `localStorage`:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+   ```typescript
+   localStorage.setItem('github_repo_owner', 'democratising-ai');
+   localStorage.setItem('github_repo_name', 'ai-policy-dashboard');
+   localStorage.setItem('github_branch', 'main');
+   ```
+
+### Usage
+#### Create a GitHub Personal Access Token (Classic)
+   - Go to https://github.com/settings/tokens
+   - Click **"Generate new token"** > **"Generate new token (classic)"**
+   - Name it (e.g., "AI Policy Dashboard Forms")
+   - Select the **`repo`** scope (or `public_repo` for public repos only)
+   - Click **"Generate token"** and copy it immediately
+
+#### Website
+1. Navigate to a data table (e.g., Policy Analysis)
+2. Click "Add New Entry"
+3. Enter your GitHub Personal Access Token when prompted
+4. Fill out and submit the form — it commits directly to the repository
+
+### How It Works
+
+1. User authenticates with a Personal Access Token
+2. Form submission triggers `GitHubService.addRowToTable()` or `updateRowInTable()`
+3. Service fetches current file content via GitHub API, parses JSON, adds/updates the row
+4. Service commits the updated file back to the repository
+5. GitHub Pages automatically rebuilds (if configured)
+
+### Security Notes
+
+Personal Access Tokens are stored in `sessionStorage` and are cleared when the browser tab is closed. This is acceptable for public repositories, trusted users, and development/testing.
+
+### Troubleshooting
+
+- You must have write permissions on the repo
+- Ensure your token has the `repo` (or `public_repo`) scope
+- If the token has expired, generate a new one and re-enter it

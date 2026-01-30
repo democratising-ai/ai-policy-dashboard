@@ -1,6 +1,4 @@
-// pages/ai-principles.component.ts
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +9,6 @@ import { DataService } from '../services/data.service';
   selector: 'app-ai-principles',
   standalone: true,
   imports: [
-    CommonModule,
     MatCardModule,
     MatListModule,
     MatIconModule,
@@ -32,7 +29,7 @@ import { DataService } from '../services/data.service';
               <p>{{ principle.description }}</p>
               <mat-progress-bar
                 mode="determinate"
-                [value]="(principle.count / maxCount) * 100"
+                [value]="(principle.count / maxCount()) * 100"
                 color="primary">
               </mat-progress-bar>
             </mat-card-content>
@@ -73,5 +70,8 @@ import { DataService } from '../services/data.service';
 export class AIPrinciplesComponent {
   dataService = inject(DataService);
 
-  maxCount = Math.max(...this.dataService.aiPrinciples().map(p => p.count));
+  maxCount = computed(() => {
+    const principles = this.dataService.aiPrinciples();
+    return principles.length > 0 ? Math.max(...principles.map(p => p.count)) : 1;
+  });
 }

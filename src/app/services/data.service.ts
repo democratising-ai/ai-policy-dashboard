@@ -1,47 +1,8 @@
-// services/data.service.ts
 import { Injectable, signal } from '@angular/core';
-import { FlexibleTableData } from './data.models';
-import { Observable, of } from 'rxjs';
-import tableADataRaw from '../../assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
-import tableBDataRaw from '../../assets/data/table_b__all_relevant_policies.json';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PolicyDataService {
-  private dataSources: Record<string, FlexibleTableData>;
-
-  constructor() {
-    // Validate and ensure the data matches the interface
-    this.dataSources = {
-      tableA: this.validateTableData(tableADataRaw),
-      tableB: this.validateTableData(tableBDataRaw)
-    };
-  }
-
-  private validateTableData(data: any): FlexibleTableData {
-    // Basic validation - ensure required properties exist
-    if (!data.columns || !data.rows) {
-      console.error('Invalid table data structure', data);
-      return { columns: [], rows: [] };
-    }
-    return data as FlexibleTableData;
-  }
-
-  getData(tableName: 'tableA' | 'tableB' = 'tableB'): Observable<FlexibleTableData> {
-    return of(this.dataSources[tableName]);
-  }
-
-  getTableAData(): Observable<FlexibleTableData> {
-    return this.getData('tableA');
-  }
-
-  getTableBData(): Observable<FlexibleTableData> {
-    return this.getData('tableB');
-  }
-}
-
-// Keep DataService separate if needed for other purposes
 export class DataService {
   private aiPrinciplesSignal = signal([
     { principle: "Accountability", count: 9, description: "It should always be clear who is accountable for the use of AI in educational settings" },

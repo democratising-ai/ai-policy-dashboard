@@ -1,4 +1,3 @@
-<!-- policy-analysis.html -->
 <div class="policy-analysis-container">
   <h2>Table B: Policy Analysis Data</h2>
 
@@ -21,6 +20,14 @@
   <!-- Data table -->
   @if (data() && !loading()) {
     <div class="table-section">
+      <!-- Add New Button -->
+      <div class="action-bar">
+        <button mat-raised-button color="primary" routerLink="/data/policy-form/tableB">
+          <mat-icon>add</mat-icon>
+          Add New Entry
+        </button>
+      </div>
+
       <!-- Controls -->
       <div class="table-controls">
         <div class="control-group">
@@ -37,7 +44,8 @@
             @for (column of data()!.columns; track column.id) {
               <mat-checkbox
                 [checked]="!hiddenColumnIds().has(column.id)"
-                (change)="toggleColumn(column.id)">
+                (change)="toggleColumn(column.id)"
+                (click)="$event.stopPropagation()">
                 {{ column.name }}
               </mat-checkbox>
             }
@@ -58,12 +66,32 @@
           <!-- Dynamic Column Definitions -->
           @for (column of visibleColumns(); track column.id) {
             <ng-container [matColumnDef]="column.name">
-              <th mat-header-cell *matHeaderCellDef>
+              <th mat-header-cell *matHeaderCellDef
+                  [class.sorted]="getSortDirection(column.name) !== null"
+                  [class.sorted-asc]="getSortDirection(column.name) === 'asc'"
+                  [class.sorted-desc]="getSortDirection(column.name) === 'desc'"
+                  class="clickable-header">
                 <div class="header-content">
-                  <span>{{ column.name }}</span>
-                  <button mat-icon-button
-                          (click)="toggleColumn(column.id)"
-                          title="Hide this column">
+                  <div class="header-sort-area"
+                       (click)="onColumnHeaderClick(column, $event)"
+                       [matTooltip]="getSortTooltip(column.name)"
+                       matTooltipPosition="below">
+                    <div class="header-text">
+                      <span>{{ column.name }}</span>
+                      @if (getSortDirection(column.name) === 'asc') {
+                        <mat-icon class="sort-icon">arrow_upward</mat-icon>
+                      } @else if (getSortDirection(column.name) === 'desc') {
+                        <mat-icon class="sort-icon">arrow_downward</mat-icon>
+                      } @else {
+                        <mat-icon class="sort-hint-icon">unfold_more</mat-icon>
+                      }
+                    </div>
+                  </div>
+                  <button type="button"
+                          class="close-button"
+                          (click)="toggleColumn(column.id); $event.stopPropagation()"
+                          title="Hide this column"
+                          aria-label="Hide this column">
                     <mat-icon>close</mat-icon>
                   </button>
                 </div>
@@ -75,7 +103,7 @@
                 }
 
                 @if (isLink(column) && getCellValue(row, column.name)) {
-                  <a [href]="getCellValue(row, column.name)"
+                  <a [href]="getSafeUrl(row, column.name)"
                     target="_blank"
                     rel="noopener noreferrer"
                     mat-button
@@ -93,11 +121,9 @@
 
           <!-- Header and Row Definitions -->
           <tr mat-header-row *matHeaderRowDef="displayedColumns(); sticky: true"></tr>
-          <tr mat-row
-            *matRowDef="let row; columns: displayedColumns();"
-            [matTooltip]="getRowTooltip(row)"
-            matTooltipPosition="right"
-            matTooltipClass="custom-tooltip">
+          <tr mat-row *matRowDef="let row; columns: displayedColumns()"
+              (click)="onRowClick(row)"
+              class="hoverable-row">
           </tr>
         </table>
       </div>
