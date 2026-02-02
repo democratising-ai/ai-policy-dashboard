@@ -10964,6 +10964,84 @@
       "index": 200,
       "createdAt": "2026-02-02T02:24:19.319Z",
       "updatedAt": "2026-02-02T02:24:19.319Z"
+    },
+    {
+      "values": {
+        "Policy Name": "AI 教育政策 тест — “Responsible AI in Education” 𓂀",
+        "Policy creator": [
+          "Ministry of Education / 教育部 / وزارة التعليم"
+        ],
+        "Relevant?": "No",
+        "Reasons for inclusion in / exclusion from our Approaches to Governing AI in Education table": "Explicit education focus; references equity, human rights, and governance mechanisms; multilingual publication (“official” + ‘working’ translations).",
+        "File": [
+          "ai_policy_教育_тест_v1.0.pdf ai_policy_教育_тест_v2.0.doc"
+        ],
+        "Year of Commencement or Creation": "-199",
+        "Relevance Type": [
+          "National policy framework"
+        ],
+        "What kinds of education, if any, are contemplated by the policy?": [
+          "Primary",
+          "secondary",
+          "tertiary",
+          "vocational",
+          "lifelong learning",
+          "教師研修",
+          "التعليم العالي"
+        ],
+        "Principles on AI in education": [
+          "Human-centric AI",
+          "fairness/equity",
+          "transparency",
+          "accountability",
+          "privacy-by-design",
+          "安全性",
+          "عدم التمييز"
+        ],
+        "Governance practices employed": [
+          "Risk assessment",
+          "ethical review boards",
+          "human oversight (“human-in-the-loop”)",
+          "audits",
+          "impact assessments",
+          "public reporting"
+        ],
+        "Analysis Complete": true,
+        "Link (OECD or Other)": "https://example.org/policy?id=AI-EDU-2023&lang=utf-8",
+        "Title": "“Governing AI for Education: Opportunities & Risks” — 概要版",
+        "Opportunity and risk orientation": "Divides focus relatively evenly between risk and opportunity",
+        "Category of creator": "Non-OECD",
+        "Translation Comments": "Translation Completed (Google Translate)",
+        "Key quotes on AI in education principles": "Balanced (opportunities ≈ risks)",
+        "Does the policy reflect the principle of human rights compatibility?": "Yes — as an objective or justification of the policy (one of several objectives or justifications)",
+        "Key quote on human rights": "“AI systems in education must augment—not replace—human judgment.” / 「人間中心のAI」 / ‘الإنسان في قلب النظام’",
+        "Does the policy reflect the principle of equity/equality?": "Yes — it talks about both (a) the risk of AI augmenting inequities/inequalities AND (b) AI as a tool for promoting equitable/equal access",
+        "Key quote on equity/equality": "“Equitable access to AI-enabled education tools is a policy priority (no learner left behind).”",
+        "General principles on AI": [
+          "Lawfulness",
+          "robustness",
+          "transparency",
+          "accountability",
+          "safety",
+          "sustainability",
+          "公平性"
+        ],
+        "Draft Analysis Complete": true,
+        "Reasons for non-inclusion (other than Irrelevant)": "Cannot Access",
+        "Weekend": false,
+        "Key quotes on general AI principles": "“High-risk AI systems require enhanced oversight, proportional safeguards, and continuous monitoring.”",
+        "WC Favourite": false,
+        "Notable Case Studes - Examples of AI in Education": "Adaptive tutoring pilots; AI-assisted grading with human review; accessibility tools for SEN learners",
+        "Other Points of Interest": "Includes RTL languages; CSV fields tested; Unicode symbols: ∑ ≠ ≤ ≥; hieroglyphs 𓀀𓃀",
+        "Record Entered By": [
+          "antoninkin"
+        ]
+      },
+      "id": "new-1770008825710",
+      "name": "AI 教育政策 тест — “Responsible AI in Education” 𓂀",
+      "index": 201,
+      "createdAt": "2026-02-02T05:07:05.710Z",
+      "updatedAt": "2026-02-02T05:07:05.710Z"
     }
   ]
 }
