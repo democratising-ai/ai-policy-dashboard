@@ -71,7 +71,6 @@ export class InputSanitizerService {
         }
       }
 
-      sanitized = this.escapeHtml(sanitized);
     }
 
     // Check pattern if provided
@@ -151,21 +150,6 @@ export class InputSanitizerService {
       .replace(/[\x00-\x1f\x7f]/g, '') // Remove control characters
       .trim()
       .substring(0, 256); // Limit key length
-  }
-
-  /**
-   * Escape HTML entities
-   */
-  private escapeHtml(str: string): string {
-    const htmlEntities: Record<string, string> = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#x27;',
-    };
-
-    return str.replace(/[&<>"']/g, char => htmlEntities[char] || char);
   }
 
   /**
