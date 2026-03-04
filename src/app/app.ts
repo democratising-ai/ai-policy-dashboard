@@ -1,6 +1,6 @@
 // app.ts
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -12,7 +12,6 @@ import { MatMenuModule } from '@angular/material/menu';
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -21,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatListModule,
     MatIconModule,
     MatMenuModule
-  ],
+],
   templateUrl: './app.html',
   styles: [`
     mat-sidenav {
