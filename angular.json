@@ -16,6 +16,10 @@
             "outputPath": "dist/ai-policy-dashboard",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "allowedCommonJsDependencies": [
+              "moment",
+              "core-js"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -24,7 +28,9 @@
             ],
             "styles": [
               "src/custom-theme.scss",
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/handsontable/styles/handsontable.css",
+              "node_modules/handsontable/styles/ht-theme-main.css"
             ]
           },
           "configurations": {
@@ -32,8 +38,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "3mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",

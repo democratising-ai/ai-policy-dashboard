@@ -31,7 +31,7 @@ export class RowInfoCardService {
 
     const portal = new ComponentPortal(InfoCardComponent);
     const componentRef = this.currentOverlayRef.attach(portal);
-    componentRef.instance.data = rowData.values || rowData;
+    componentRef.setInput('data', rowData.values || rowData);
 
     this.backdropSub = this.currentOverlayRef.backdropClick().subscribe(() => this.hideCard());
   }

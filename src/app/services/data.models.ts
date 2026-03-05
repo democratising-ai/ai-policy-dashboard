@@ -17,25 +17,22 @@ export interface EducationData {
 }
 
 export interface FlexibleColumn {
-  id: string;
   name: string;
-  type: string;
   format: {
     type: string;
     isArray: boolean;
-    [key: string]: any; // Allow additional format properties
+    options?: string[];
   };
-  [key: string]: any; // Allow additional column properties
 }
 
 export interface FlexibleRow {
   id: string;
   name: string;
   index: number;
-  values: Record<string, any>; // Flexible key-value pairs
+  values: Record<string, any>;
   createdAt?: string;
   updatedAt?: string;
-  [key: string]: any; // Allow additional row properties
+  [key: string]: any;
 }
 
 export interface FlexibleTableData {

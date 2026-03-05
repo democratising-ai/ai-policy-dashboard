@@ -1,0 +1,95 @@
+<div class="stats-container">
+  <h1>Summary Statistics</h1>
+
+  <div class="stat-cards">
+    @for (card of statCards; track card.label) {
+      <mat-card>
+        <mat-card-content class="stat-card-content">
+          <mat-icon class="stat-icon">{{ card.icon }}</mat-icon>
+          <div class="stat-value">{{ card.value }}</div>
+          <div class="stat-label">{{ card.label }}</div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <div class="charts-grid">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Relevance Assessment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-wrapper">
+        <canvas baseChart
+          [type]="relevanceChart.type"
+          [data]="relevanceChart.data"
+          [options]="relevanceChart.options">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Policies by Year</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-wrapper">
+        <canvas baseChart
+          [type]="yearChart.type"
+          [data]="yearChart.data"
+          [options]="yearChart.options">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-full-width">
+      <mat-card-header>
+        <mat-card-title>Top Jurisdictions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-wrapper">
+        <canvas baseChart
+          [type]="jurisdictionChart.type"
+          [data]="jurisdictionChart.data"
+          [options]="jurisdictionChart.options">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-full-width">
+      <mat-card-header>
+        <mat-card-title>Relevance Types</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-wrapper" [style.height]="getChartHeight(relevanceTypeChart)">
+        <canvas baseChart
+          [type]="relevanceTypeChart.type"
+          [data]="relevanceTypeChart.data"
+          [options]="relevanceTypeChart.options">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-full-width">
+      <mat-card-header>
+        <mat-card-title>Education Types</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-wrapper" [style.height]="getChartHeight(educationChart)">
+        <canvas baseChart
+          [type]="educationChart.type"
+          [data]="educationChart.data"
+          [options]="educationChart.options">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-full-width">
+      <mat-card-header>
+        <mat-card-title>Governance Practices</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="chart-wrapper" [style.height]="getChartHeight(governanceChart)">
+        <canvas baseChart
+          [type]="governanceChart.type"
+          [data]="governanceChart.data"
+          [options]="governanceChart.options">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

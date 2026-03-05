@@ -1,4 +1,3 @@
-// tips.component.ts
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 

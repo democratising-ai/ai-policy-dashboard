@@ -1,28 +1,39 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { FlexibleTableData, FlexibleColumn, FlexibleRow } from './data.models';
 import tableADataRaw from '../../assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
-import tableBDataRaw from '../../assets/data/table_b__all_relevant_policies.json';
+
+/** Column name for "Relevance Type" – rows with a non-empty value appear in table B. */
+const RELEVANCE_TYPE_COL = 'Relevance Type';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PolicyDataService {
-  private dataSources: Record<string, FlexibleTableData>;
+  private tableA: FlexibleTableData;
+  private tableB: FlexibleTableData;
 
   constructor() {
-    this.dataSources = {
-      tableA: this.validateTableData(tableADataRaw),
-      tableB: this.validateTableData(tableBDataRaw)
-    };
+    this.tableA = this.validateTableData(tableADataRaw);
+    this.tableB = this.deriveTableB(this.tableA);
+  }
+
+  /** Table B = table A rows where "Relevance Type" is not blank, same columns. */
+  private deriveTableB(tableA: FlexibleTableData): FlexibleTableData {
+    const rows = tableA.rows.filter(row => {
+      const val = row.values[RELEVANCE_TYPE_COL];
+      if (val == null || val === '') return false;
+      if (Array.isArray(val) && val.length === 0) return false;
+      return true;
+    });
+
+    return { columns: tableA.columns, rows };
   }
 
   private isFlexibleColumn(value: unknown): value is FlexibleColumn {
     return (
       typeof value === 'object' &&
       value !== null &&
-      typeof (value as FlexibleColumn).id === 'string' &&
       typeof (value as FlexibleColumn).name === 'string' &&
-      typeof (value as FlexibleColumn).type === 'string' &&
       typeof (value as FlexibleColumn).format === 'object' &&
       (value as FlexibleColumn).format !== null
     );
@@ -58,14 +69,6 @@ export class PolicyDataService {
   }
 
   getData(tableName: 'tableA' | 'tableB' = 'tableB'): FlexibleTableData {
-    return this.dataSources[tableName] ?? { columns: [], rows: [] };
-  }
-
-  getTableAData(): FlexibleTableData {
-    return this.getData('tableA');
-  }
-
-  getTableBData(): FlexibleTableData {
-    return this.getData('tableB');
+    return tableName === 'tableA' ? this.tableA : this.tableB;
   }
 }

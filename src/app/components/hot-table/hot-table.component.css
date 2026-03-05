@@ -1,0 +1,310 @@
+.hot-table-container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-width: 100%;
+  overflow: hidden;
+  height: calc(100vh - 2rem);
+  box-sizing: border-box;
+}
+
+.hot-table-container h2 {
+  margin: 1rem;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.error-state {
+  color: #e74c3c;
+}
+
+.error-state p {
+  margin-bottom: 1rem;
+}
+
+/* Action Bar */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+.action-bar button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Table Section */
+.table-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 0;
+}
+
+/* Controls */
+.table-controls {
+  background: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+/* Column Selector */
+.column-selector {}
+
+.column-selector summary {
+  cursor: pointer;
+  padding: 0.125rem 0.375rem;
+  background: white;
+  border-radius: 4px;
+  user-select: none;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.column-selector summary:hover {
+  background: #e9ecef;
+}
+
+.column-selector-header {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0.125rem 0;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.125rem;
+  align-items: center;
+}
+
+.column-grid {
+  column-count: 4;
+  column-gap: 0.75rem;
+  padding: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.column-item {
+  break-inside: avoid;
+  margin-bottom: 0.125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Button height override */
+.button-group .mat-mdc-button {
+  height: 20px;
+  line-height: 20px;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+}
+
+:host ::ng-deep .button-group .mat-mdc-button-touch-target {
+  height: 28px;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  flex: 1;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background: white;
+  min-height: 0;
+}
+
+.hot-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Table Summary */
+.table-summary {
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.813rem;
+  color: #6c757d;
+  margin-top: 0.5rem;
+}
+
+.table-summary p {
+  margin: 0;
+}
+
+.filter-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.filter-hint mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ========================================
+   Handsontable Overrides - Match Material Table Style
+   ======================================== */
+
+/* Base font and sizing */
+:host ::ng-deep .handsontable {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 0.813rem;
+  line-height: 1.2;
+}
+
+/* Header cells - match mat-mdc-header-cell */
+:host ::ng-deep .handsontable th {
+  background: #f8f9fa !important;
+  font-weight: 600;
+  font-size: 0.813rem;
+  padding: 0.25rem 0.5rem;
+  height: auto;
+  min-height: 32px;
+  border-bottom: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  white-space: nowrap;
+  color: #333;
+}
+
+/* Data cells - match mat-mdc-cell */
+:host ::ng-deep .handsontable td {
+  padding: 0.25rem 0.5rem;
+  height: auto;
+  min-height: 32px;
+  font-size: 0.813rem;
+  border-bottom: 1px solid #e9ecef;
+  border-right: 1px solid #e9ecef;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 1.2;
+  color: #212529;
+}
+
+/* Row hover - match mat-mdc-row:hover */
+:host ::ng-deep .handsontable tr:hover td {
+  background: #f8f9fa !important;
+}
+
+/* Clickable rows */
+:host ::ng-deep .handsontable td {
+  cursor: pointer;
+}
+
+/* Selected/highlighted cells */
+:host ::ng-deep .handsontable .currentRow {
+  background: #f0f8ff !important;
+}
+
+:host ::ng-deep .handsontable td.area {
+  background: #e3f2fd !important;
+}
+
+/* Links in cells */
+:host ::ng-deep .hot-link {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.25rem;
+}
+
+:host ::ng-deep .hot-link:hover {
+  text-decoration: underline;
+}
+
+/* Row header styling */
+:host ::ng-deep .handsontable th.ht__highlight {
+  background: #e9ecef !important;
+}
+
+/* Column header highlight on sort/filter */
+:host ::ng-deep .handsontable th.ht__active_highlight {
+  background: #e9ecef !important;
+  border-bottom: 2px solid #5a6269 !important;
+}
+
+/* Filter dropdown styling */
+:host ::ng-deep .htDropdownMenu {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dee2e6;
+}
+
+:host ::ng-deep .htFiltersMenuLabel {
+  font-weight: 500;
+  font-size: 0.813rem;
+}
+
+:host ::ng-deep .htDropdownMenu .ht_master table {
+  font-size: 0.813rem;
+}
+
+/* Scrollbar styling */
+:host ::ng-deep .handsontable .wtHolder {
+  scrollbar-width: thin;
+}
+
+:host ::ng-deep .handsontable .wtHolder::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+:host ::ng-deep .handsontable .wtHolder::-webkit-scrollbar-thumb {
+  background: #adb5bd;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .handsontable .wtHolder::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hot-table-container {
+    padding: 0.5rem;
+  }
+
+  :host ::ng-deep .handsontable th,
+  :host ::ng-deep .handsontable td {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.75rem;
+    min-height: 28px;
+  }
+
+  .table-summary {
+    font-size: 0.75rem;
+  }
+
+  .column-grid {
+    column-count: 2;
+  }
+}

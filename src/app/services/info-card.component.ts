@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
@@ -7,14 +7,14 @@ import { MatCardModule } from '@angular/material/card';
   imports: [MatCardModule],
   template: `
     <mat-card class="info-card">
-      @if (getTitle()) {
+      @if (title(); as t) {
         <mat-card-header class="info-card-header">
-          <mat-card-title class="info-card-title">{{ getTitle() }}</mat-card-title>
+          <mat-card-title class="info-card-title">{{ t }}</mat-card-title>
         </mat-card-header>
       }
 
       <mat-card-content class="info-card-content">
-        @for (item of dataEntries; track item[0]) {
+        @for (item of dataEntries(); track item[0]) {
           <div class="info-row">
             <span class="info-label">{{ formatLabel(item[0]) }}</span>
             <span class="info-value">{{ formatValue(item[1]) }}</span>
@@ -118,22 +118,24 @@ import { MatCardModule } from '@angular/material/card';
   `]
 })
 export class InfoCardComponent {
-  @Input() data: any = {};
+  data = input<any>({});
 
-  get dataEntries() {
-    if (!this.data || typeof this.data !== 'object') return [];
-
-    return Object.entries(this.data)
-      .filter(([key, value]) => value !== null && value !== undefined && value !== '');
-  }
-
-  getTitle(): string | null {
+  title = computed(() => {
+    const d = this.data();
+    if (!d) return null;
     const titleFields = ['title', 'name', 'policy_name', 'document_title'];
     for (const field of titleFields) {
-      if (this.data[field]) return String(this.data[field]);
+      if (d[field]) return String(d[field]);
     }
     return null;
-  }
+  });
+
+  dataEntries = computed(() => {
+    const d = this.data();
+    if (!d || typeof d !== 'object') return [];
+    return Object.entries(d)
+      .filter(([key, value]) => value !== null && value !== undefined && value !== '');
+  });
   formatLabel(key: string): string {
     return key
       .replace(/_/g, ' ')

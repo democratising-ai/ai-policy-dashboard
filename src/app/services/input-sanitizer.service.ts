@@ -36,9 +36,6 @@ export class InputSanitizerService {
     /url\s*\(\s*["']?\s*javascript:/i,
   ];
 
-  /**
-   * Sanitize a string value
-   */
   sanitizeString(value: string, config: ValidationConfig = {}): SanitizationResult {
     const errors: string[] = [];
     const maxLength = config.maxLength || this.DEFAULT_STRING_MAX_LENGTH;
@@ -52,7 +49,6 @@ export class InputSanitizerService {
 
     let sanitized = String(value);
 
-    // Check length
     if (sanitized.length > maxLength) {
       errors.push(`Value exceeds maximum length of ${maxLength} characters`);
       sanitized = sanitized.substring(0, maxLength);
@@ -73,7 +69,6 @@ export class InputSanitizerService {
 
     }
 
-    // Check pattern if provided
     if (config.pattern && !config.pattern.test(sanitized)) {
       errors.push('Value does not match required pattern');
     }
@@ -85,14 +80,10 @@ export class InputSanitizerService {
     };
   }
 
-  /**
-   * Sanitize an object/row data for submission
-   */
   sanitizeRowData(data: Record<string, any>): SanitizationResult {
     const errors: string[] = [];
     const sanitizedData: Record<string, any> = {};
 
-    // Check total size
     const jsonSize = JSON.stringify(data).length;
     if (jsonSize > this.DEFAULT_MAX_LENGTH) {
       return {
@@ -103,13 +94,11 @@ export class InputSanitizerService {
     }
 
     for (const [key, value] of Object.entries(data)) {
-      // Sanitize key
       const sanitizedKey = this.sanitizeKey(key);
       if (sanitizedKey !== key) {
         errors.push(`Key "${key}" was sanitized`);
       }
 
-      // Sanitize value based on type
       if (typeof value === 'string') {
         const result = this.sanitizeString(value);
         sanitizedData[sanitizedKey] = result.sanitizedValue;
@@ -128,7 +117,6 @@ export class InputSanitizerService {
         sanitizedData[sanitizedKey] = result.sanitizedValue;
         errors.push(...result.errors.map(e => `${key}.${e}`));
       } else {
-        // Numbers, booleans, null - pass through
         sanitizedData[sanitizedKey] = value;
       }
     }
@@ -140,40 +128,28 @@ export class InputSanitizerService {
     };
   }
 
-  /**
-   * Sanitize object key names
-   */
   private sanitizeKey(key: string): string {
-    // Remove any characters that could cause JSON issues
     return key
       .replace(/[<>'"\\]/g, '')
-      .replace(/[\x00-\x1f\x7f]/g, '') // Remove control characters
+      .replace(/[\x00-\x1f\x7f]/g, '')
       .trim()
-      .substring(0, 256); // Limit key length
+      .substring(0, 256);
   }
 
-  /**
-   * Validate URL format
-   */
   isValidUrl(url: string): boolean {
-    if (!url) return true; // Empty is valid (not required)
+    if (!url) return true;
 
     try {
       const parsed = new URL(url);
-      // Only allow http and https protocols
       return ['http:', 'https:'].includes(parsed.protocol);
     } catch {
       return false;
     }
   }
 
-  /**
-   * Sanitize URL
-   */
   sanitizeUrl(url: string): string {
     if (!url) return '';
 
-    // Remove javascript: and data: URLs
     if (/^(javascript|data|vbscript):/i.test(url.trim())) {
       return '';
     }

@@ -1,4 +1,3 @@
-// app.ts
 import { Component, inject } from '@angular/core';
 
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';

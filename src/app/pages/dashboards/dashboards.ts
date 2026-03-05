@@ -1,4 +1,3 @@
-// pages/dashboards/dashboards.ts
 import { Component, inject, signal } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,7 +37,7 @@ import { InputSanitizerService } from '../../../services/input-sanitizer.service
   templateUrl: './policy-form.html',
   styleUrl: './policy-form.css'
 })
-export class PolicyFormComponent implements OnInit {
+export class PolicyFormComponent {
   private fb = inject(FormBuilder);
   githubService = inject(GitHubService);
   private policyDataService = inject(PolicyDataService);
@@ -46,7 +46,6 @@ export class PolicyFormComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private sanitizer = inject(InputSanitizerService);
-  private destroyRef = inject(DestroyRef);
 
   form!: FormGroup;
   tableData = signal<FlexibleTableData | null>(null);
@@ -55,18 +54,18 @@ export class PolicyFormComponent implements OnInit {
   submitting = signal(false);
   isEditMode = signal(false);
   rowId = signal<string | null>(null);
-  tableType = signal<'tableA' | 'tableB'>('tableB');
-  ngOnInit() {
-    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      const table = params['table'] || 'tableB';
-      this.tableType.set(table === 'tableA' ? 'tableA' : 'tableB');
+  tableType = signal<'tableA' | 'tableB'>('tableA');
+
+  constructor() {
+    this.route.params.pipe(takeUntilDestroyed()).subscribe(params => {
+      const table = params['table'] || 'tableA';
+      this.tableType.set(table === 'tableB' ? 'tableB' : 'tableA');
       this.loadTableData();
     });
 
-    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed()).subscribe(params => {
       if (params['edit'] && params['id']) {
         const rawId = params['id'];
-        // Validate row ID format (prevent injection)
         if (this.isValidRowId(rawId)) {
           this.isEditMode.set(true);
           this.rowId.set(rawId);
@@ -76,41 +75,28 @@ export class PolicyFormComponent implements OnInit {
         }
       }
     });
-
   }
 
-  /**
-   * Validate row ID format to prevent injection attacks
-   */
   private isValidRowId(id: string): boolean {
     if (!id || typeof id !== 'string') return false;
-    // Allow alphanumeric, hyphens, underscores, and common ID formats
-    // Max length 100 to prevent DoS
     const validPattern = /^[a-zA-Z0-9_-]{1,100}$/;
     return validPattern.test(id);
   }
 
   loadTableData() {
     this.loading.set(true);
-    const data = this.tableType() === 'tableA'
-      ? this.policyDataService.getTableAData()
-      : this.policyDataService.getTableBData();
+    const data = this.policyDataService.getData('tableA');
 
     this.tableData.set(data);
     this.columns.set(data.columns);
 
-    // Validate row exists if in edit mode
     if (this.isEditMode() && this.rowId()) {
       const row = data.rows.find(r => r.id === this.rowId());
       if (!row) {
         this.snackBar.open('Row not found. It may have been deleted.', 'Close', { duration: 3000 });
         this.isEditMode.set(false);
         this.rowId.set(null);
-        // Redirect to table view
-        const route = this.tableType() === 'tableA'
-          ? '/data/all-potentially-relevant-ai-policies-reviewed'
-          : '/data/policy-analysis';
-        this.router.navigate([route]);
+        this.router.navigate([this.tableRoute()]);
         this.loading.set(false);
         return;
       }
@@ -135,9 +121,11 @@ export class PolicyFormComponent implements OnInit {
       }
 
       if (column.format.type === 'checkbox') {
-        formControls[column.id] = this.fb.control(false, validators);
+        formControls[column.name] = this.fb.control(false, validators);
+      } else if (column.format.isArray && column.format.options?.length) {
+        formControls[column.name] = this.fb.control([], validators);
       } else {
-        formControls[column.id] = this.fb.control('', validators);
+        formControls[column.name] = this.fb.control('', validators);
       }
     });
 
@@ -146,12 +134,16 @@ export class PolicyFormComponent implements OnInit {
     if (this.isEditMode() && this.rowId()) {
       const row = data.rows.find(r => r.id === this.rowId());
       if (row) {
-        Object.keys(row.values).forEach(key => {
-          const control = this.form.get(key);
+        data.columns.forEach(col => {
+          const control = this.form.get(col.name);
           if (control) {
-            const value = row.values[key];
+            const value = row.values[col.name];
             if (Array.isArray(value)) {
-              control.setValue(value.join(', '));
+              if (col.format.isArray && col.format.options?.length) {
+                control.setValue(value);
+              } else {
+                control.setValue(value.join(', '));
+              }
             } else {
               control.setValue(value ?? '');
             }
@@ -189,22 +181,19 @@ export class PolicyFormComponent implements OnInit {
 
     this.submitting.set(true);
 
-    // Build row data from form
     const formValue = this.form.value;
     const rowData: any = {
       values: {}
     };
 
-    // Map form values to row structure (use column *name* as key to match table JSON)
     this.columns().forEach(column => {
-      const value = formValue[column.id];
+      const value = formValue[column.name];
       const normalized = this.normalizeFormValue(column, value);
       if (normalized !== undefined) {
         rowData.values[column.name] = normalized;
       }
     });
 
-    // Add name if not present
     const nameCol = this.columns().find(col =>
       col.name.toLowerCase().includes('name') || col.name.toLowerCase().includes('title')
     );
@@ -214,7 +203,6 @@ export class PolicyFormComponent implements OnInit {
       rowData.name = `New Entry ${new Date().toISOString()}`;
     }
 
-    // Sanitize and validate all input data before submission
     const sanitizationResult = this.sanitizer.sanitizeRowData(rowData.values);
     if (!sanitizationResult.isValid) {
       this.submitting.set(false);
@@ -224,7 +212,6 @@ export class PolicyFormComponent implements OnInit {
     }
     rowData.values = sanitizationResult.sanitizedValue;
 
-    // Also sanitize the name field
     const nameResult = this.sanitizer.sanitizeString(rowData.name, { maxLength: 500 });
     rowData.name = nameResult.sanitizedValue;
 
@@ -241,19 +228,12 @@ export class PolicyFormComponent implements OnInit {
           { duration: 3000 }
         );
 
-        // Navigate back to table view
-        setTimeout(() => {
-          const route = this.tableType() === 'tableA'
-            ? '/data/all-potentially-relevant-ai-policies-reviewed'
-            : '/data/policy-analysis';
-          this.router.navigate([route]);
-        }, 1500);
+        setTimeout(() => this.router.navigate([this.tableRoute()]), 1500);
       },
       error: (error) => {
         this.submitting.set(false);
         let errorMessage = error.error?.message || error.message || 'Failed to submit form';
 
-        // Provide helpful error messages for common issues
         if (errorMessage.includes('404') || errorMessage.includes('not found')) {
           errorMessage = 'File not found. Please verify the file exists in the repository.';
         } else if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
@@ -268,62 +248,62 @@ export class PolicyFormComponent implements OnInit {
   }
 
   cancel() {
-    const route = this.tableType() === 'tableA'
+    this.router.navigate([this.tableRoute()]);
+  }
+
+  private tableRoute = computed(() =>
+    this.tableType() === 'tableA'
       ? '/data/all-potentially-relevant-ai-policies-reviewed'
-      : '/data/policy-analysis';
-    this.router.navigate([route]);
-  }
-
-  getFieldLabel(column: FlexibleColumn): string {
-    return column.name;
-  }
-
-  getFieldType(column: FlexibleColumn): string {
-    return column.format.type;
-  }
+      : '/data/policy-analysis'
+  );
 
   isFieldRequired(column: FlexibleColumn): boolean {
     return column.name.toLowerCase().includes('name') ||
            column.name.toLowerCase().includes('title');
   }
 
+  isLongTextField(column: FlexibleColumn): boolean {
+    return column.name.length > 50 ||
+           column.name.toLowerCase().includes('reason') ||
+           column.name.toLowerCase().includes('description') ||
+           column.name.toLowerCase().includes('note');
+  }
+
   /**
-   * Get unique select options for a column based on existing table rows.
-   * This makes <mat-select> usable instead of only showing the placeholder.
-   * Handles both array and non-array values in the data.
+   * Get unique select options for a column, merging predefined options
+   * with additional values found in existing data rows.
    */
   getSelectOptions(column: FlexibleColumn): string[] {
     const data = this.tableData();
     if (!data) return [];
 
-    const options = new Set<string>();
+    const orderedOptions: string[] = column.format.options ? [...column.format.options] : [];
+    const optionSet = new Set<string>(orderedOptions);
 
     data.rows.forEach(row => {
       const value = row.values[column.name];
-
-      // Handle array values (even if column says isArray: false, data may have arrays)
       if (Array.isArray(value)) {
         value.forEach((v: any) => {
           if (v !== null && v !== undefined && v !== '') {
-            options.add(String(v));
+            const str = String(v);
+            if (!optionSet.has(str)) {
+              orderedOptions.push(str);
+              optionSet.add(str);
+            }
           }
         });
       } else if (value !== null && value !== undefined && value !== '') {
-        options.add(String(value));
+        const str = String(value);
+        if (!optionSet.has(str)) {
+          orderedOptions.push(str);
+          optionSet.add(str);
+        }
       }
     });
 
-    // If no options found, check if column has predefined options in format
-    if (options.size === 0 && column.format['options']) {
-      column.format['options'].forEach((opt: string) => options.add(opt));
-    }
-
-    return Array.from(options).sort((a, b) => a.localeCompare(b));
+    return orderedOptions;
   }
 
-  /**
-   * Check if a select column has any options available.
-   */
   hasSelectOptions(column: FlexibleColumn): boolean {
     return this.getSelectOptions(column).length > 0;
   }

@@ -4,6 +4,7 @@ import { TipsComponent } from './pages/tips.component';
 import { DashboardsComponent } from './pages/dashboards/dashboards';
 import { DataComponent } from './pages/data/data';
 import { AIPrinciplesComponent } from './pages/ai-principles.component';
+import { SummaryStatsComponent } from './pages/summary-stats/summary-stats.component';
 import { AllPoliciesComponent } from './pages/dashboards/all-policies/all-policies';
 import { RelevantPoliciesComponent } from './pages/dashboards/relevant-policies/relevant-policies';
 import { CreationYearComponent } from './pages/dashboards/creation-year/creation-year';
@@ -47,6 +48,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'relevance-assessment', pathMatch: 'full' }
     ]
   },
+  { path: 'summary', component: SummaryStatsComponent },
   { path: 'ai-principles', component: AIPrinciplesComponent },
   { path: '**', redirectTo: '' }
 ];

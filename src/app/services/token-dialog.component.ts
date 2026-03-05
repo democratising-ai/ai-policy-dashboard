@@ -139,7 +139,7 @@ import { MatIconModule } from '@angular/material/icon';
     }
 
     mat-dialog-actions {
-      padding: 16px 0 0 0;
+      padding: 0;
     }
   `]
 })

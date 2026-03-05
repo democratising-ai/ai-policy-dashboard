@@ -1,4 +1,3 @@
-// pages/data/data.ts
 import { Component, inject, signal } from '@angular/core';
 
 import { MatTableModule } from '@angular/material/table';

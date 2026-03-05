@@ -1,0 +1,77 @@
+<div class="hot-table-container">
+  <h2>{{ tableTitle() }}</h2>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner></mat-spinner>
+      <p>Loading data...</p>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (error() && !loading()) {
+    <div class="error-state">
+      <p>{{ error() }}</p>
+      <button mat-raised-button (click)="onRetry()">Retry</button>
+    </div>
+  }
+
+  <!-- Data table -->
+  @if (tableData(); as td) {
+  @if (!loading()) {
+    <div class="table-section">
+      <!-- Add New Button -->
+      @if (addButtonRoute(); as route) {
+        <div class="action-bar">
+          <a mat-raised-button color="primary" [routerLink]="route">
+            <mat-icon>add</mat-icon>
+            Add New Entry
+          </a>
+        </div>
+      }
+
+      <!-- Controls -->
+      <div class="table-controls">
+        <details class="column-selector">
+          <summary>
+            Columns ({{ visibleColumns().length }}/{{ td.columns.length }})
+          </summary>
+          <div class="column-selector-header">
+            <div class="button-group">
+              <button mat-button (click)="toggleAllColumns(true)">Show All</button>
+              <button mat-button (click)="toggleAllColumns(false)">Hide All</button>
+            </div>
+          </div>
+          <div class="column-grid">
+            @for (column of td.columns; track column.name) {
+              <div class="column-item">
+                <mat-checkbox
+                  [checked]="!hiddenColumnIds().has(column.name)"
+                  (change)="toggleColumn(column.name)"
+                  (click)="$event.stopPropagation()">
+                  {{ column.name }}
+                </mat-checkbox>
+              </div>
+            }
+          </div>
+        </details>
+      </div>
+
+      <!-- Handsontable Container -->
+      <div class="table-wrapper">
+        <div #hotContainer class="hot-container"></div>
+      </div>
+
+      <!-- Summary -->
+      <div class="table-summary">
+        <p>Showing {{ filteredRowCount() }} @if (filteredRowCount() !== totalRowCount) { of {{ totalRowCount }} } rows with {{ visibleColumns().length }} columns</p>
+        <p class="filter-hint">
+          <mat-icon>filter_list</mat-icon>
+          Click the dropdown arrow in column headers to filter data
+        </p>
+      </div>
+    </div>
+  }
+  }
+</div>

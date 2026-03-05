@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -34,44 +34,37 @@ export class GitHubService {
   }
 
   private detectRepoOwner(): string {
-    // Try to get from localStorage first (user can set it)
     const stored = localStorage.getItem('github_repo_owner');
     if (stored) return stored;
 
-    // Try to detect from URL
     const hostname = window.location.hostname;
     if (hostname.includes('github.io')) {
       const parts = hostname.split('.');
       if (parts.length >= 2) {
-        return parts[0]; // username.github.io -> username
+        return parts[0];
       }
     }
 
-    // Default for this project
     return 'democratising-ai';
   }
 
   private detectRepoName(): string {
-    // Try to get from localStorage first
     const stored = localStorage.getItem('github_repo_name');
     if (stored) return stored;
 
-    // On localhost, we can't detect from pathname (it's just the route, not repo name)
     const hostname = window.location.hostname;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'ai-policy-dashboard'; // Use default for local development
+      return 'ai-policy-dashboard';
     }
 
-    // Try to detect from pathname (only works on GitHub Pages)
     const pathname = window.location.pathname;
     if (pathname.startsWith('/') && pathname.length > 1) {
       const parts = pathname.split('/').filter(p => p);
       if (parts.length > 0 && parts[0] !== '') {
-        return parts[0]; // /repo-name/... -> repo-name
+        return parts[0];
       }
     }
 
-    // Default
     return 'ai-policy-dashboard';
   }
 
@@ -80,11 +73,13 @@ export class GitHubService {
     localStorage.setItem('github_repo_name', name);
   }
 
+  private http = inject(HttpClient);
+
   isAuthenticated = signal<boolean>(false);
   currentUser = signal<GitHubUser | null>(null);
   accessToken = signal<string | null>(null);
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.checkAuthentication();
   }
 
@@ -110,11 +105,15 @@ export class GitHubService {
     sessionStorage.setItem(this.TOKEN_EXPIRY_KEY, expiryTime.toString());
   }
 
-  private verifyToken(token: string): void {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
+  private authHeaders(token?: string): HttpHeaders {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token ?? this.accessToken()!}`,
       'Accept': 'application/vnd.github.v3+json'
     });
+  }
+
+  private verifyToken(token: string): void {
+    const headers = this.authHeaders(token);
 
     this.http.get<GitHubUser>(`${this.GITHUB_API}/user`, { headers })
       .subscribe({
@@ -150,19 +149,14 @@ export class GitHubService {
       return throwError(() => new Error('Not authenticated'));
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github.v3+json'
-    });
-
-    // URL encode the file path
+    const headers = this.authHeaders(token);
     const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
-    const url = `${this.GITHUB_API}/repos/${this.getRepoOwner()}/${this.getRepoName()}/contents/${encodedPath}?ref=${this.detectBranch()}`;
+    const url = `${this.GITHUB_API}/repos/${this.detectRepoOwner()}/${this.detectRepoName()}/contents/${encodedPath}?ref=${this.detectBranch()}`;
 
     return this.http.get<GitHubFileContent>(url, { headers }).pipe(
       map(response => ({
         ...response,
-        content: this.base64DecodeUnicode(response.content.replace(/\s/g, '')) // Decode base64 (UTF-8 safe)
+        content: this.base64DecodeUnicode(response.content.replace(/\s/g, ''))
       })),
       catchError(error => {
         const errorMessage = error.status === 404
@@ -201,19 +195,13 @@ export class GitHubService {
       return throwError(() => new Error('Not authenticated'));
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    });
-
-    // URL encode the file path
+    const headers = this.authHeaders(token);
     const encodedPath = encodeURIComponent(filePath).replace(/%2F/g, '/');
-    const url = `${this.GITHUB_API}/repos/${this.getRepoOwner()}/${this.getRepoName()}/contents/${encodedPath}`;
+    const url = `${this.GITHUB_API}/repos/${this.detectRepoOwner()}/${this.detectRepoName()}/contents/${encodedPath}`;
 
     const body: any = {
       message: message,
-      content: this.base64EncodeUnicode(content), // Encode to base64 (UTF-8 safe)
+      content: this.base64EncodeUnicode(content),
       branch: this.detectBranch()
     };
 
@@ -221,11 +209,7 @@ export class GitHubService {
       body.sha = sha;
     }
 
-    return this.http.put(url, body, { headers }).pipe(
-      catchError(error => {
-        return throwError(() => error);
-      })
-    );
+    return this.http.put(url, body, { headers });
   }
 
   /**
@@ -234,12 +218,10 @@ export class GitHubService {
    * diffs (e.g. line-ending or encoding changes) when pushing to GitHub.
    */
   addRowToTable(
-    tableFile: 'tableA' | 'tableB',
+    tableFile: string,
     newRow: any
   ): Observable<any> {
-    const filePath = tableFile === 'tableA'
-      ? 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json'
-      : 'src/assets/data/table_b__all_relevant_policies.json';
+    const filePath = 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
 
     return this.getFileContent(filePath).pipe(
       switchMap(fileData => {
@@ -261,17 +243,13 @@ export class GitHubService {
           const userName = this.currentUser()?.login || 'User';
           const commitMessage = `Add new row to ${tableFile} by ${userName}`;
 
-          // Detect line ending style used in the file
           const lineEnding = raw.includes('\r\n') ? '\r\n' : '\n';
-          // Match the end of rows array: last row's closing brace (4 spaces), array close (2 spaces), object close
-          // Also handle optional trailing newline
           const endPattern = new RegExp(`    \\}${lineEnding}  \\]${lineEnding}\\}${lineEnding}?$`);
           if (!endPattern.test(raw)) {
             return throwError(() => new Error('Unexpected JSON structure: could not find rows end'));
           }
 
           const newRowJson = JSON.stringify(rowToAdd, null, 2);
-          // Indent the new row with 4 spaces (to match existing rows)
           const indented = newRowJson.split('\n').map(line => '    ' + line).join(lineEnding);
           const updated = raw.replace(endPattern, '    },' + lineEnding + indented + lineEnding + '  ]' + lineEnding + '}' + lineEnding);
 
@@ -284,38 +262,32 @@ export class GitHubService {
   }
 
   updateRowInTable(
-    tableFile: 'tableA' | 'tableB',
+    tableFile: string,
     rowId: string,
     updatedRow: any
   ): Observable<any> {
-    const filePath = tableFile === 'tableA'
-      ? 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json'
-      : 'src/assets/data/table_b__all_relevant_policies.json';
+    const filePath = 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
 
     return this.getFileContent(filePath).pipe(
       switchMap(fileData => {
         try {
           const data = JSON.parse(fileData.content);
 
-          // Find and update the row
           const rowIndex = data.rows.findIndex((r: any) => r.id === rowId);
           if (rowIndex === -1) {
             return throwError(() => new Error('Row not found'));
           }
 
-          // Update the row
           data.rows[rowIndex] = {
             ...data.rows[rowIndex],
             ...updatedRow,
-            id: rowId, // Preserve ID
+            id: rowId,
             updatedAt: new Date().toISOString()
           };
 
-          // Create commit message
           const userName = this.currentUser()?.login || 'User';
           const commitMessage = `Update row ${rowId} in ${tableFile} by ${userName}`;
 
-          // Update the file
           return this.updateFile(filePath, JSON.stringify(data, null, 2), commitMessage, fileData.sha);
         } catch (error) {
           return throwError(() => new Error('Failed to parse JSON data'));
@@ -324,20 +296,4 @@ export class GitHubService {
     );
   }
 
-  getRepoConfig(): { owner: string; name: string; branch: string } {
-    return {
-      owner: this.detectRepoOwner(),
-      name: this.detectRepoName(),
-      branch: this.detectBranch()
-    };
-  }
-
-  getRepoOwner(): string {
-    return this.detectRepoOwner();
-  }
-
-  getRepoName(): string {
-    return this.detectRepoName();
-  }
 }
-

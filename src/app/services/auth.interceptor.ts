@@ -1,7 +1,3 @@
-/**
- * HTTP Interceptor for adding security headers and handling authentication errors.
- */
-
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
@@ -23,15 +19,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(modifiedReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Handle authentication errors
       if (error.status === 401) {
-        // Token is invalid or expired - clear it
         githubService.logout();
         return throwError(() => new Error('Authentication expired. Please re-authenticate.'));
       }
 
       if (error.status === 403) {
-        // Rate limiting or permission issues
         if (error.headers?.get('X-RateLimit-Remaining') === '0') {
           return throwError(() => new Error('GitHub API rate limit exceeded. Please wait before trying again.'));
         }

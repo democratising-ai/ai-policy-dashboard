@@ -2,8 +2,12 @@
   <mat-card>
     <mat-card-header>
       <mat-card-title>
-        <mat-icon>{{ isEditMode() ? 'edit' : 'add' }}</mat-icon>
-        {{ isEditMode() ? 'Edit Policy Entry' : 'Add New Policy Entry' }}
+        @if (isEditMode()) {
+          <mat-icon>edit</mat-icon>
+          Edit Policy Entry
+        } @else {
+          Policy Entry Form
+        }
       </mat-card-title>
       <mat-card-subtitle>
         {{ tableType() === 'tableA' ? 'Table A' : 'Table B' }}
@@ -20,9 +24,7 @@
             Authenticate
           </button>
         </div>
-      }
-
-      @if (isAuthenticated()) {
+      } @else {
         <div class="auth-status authenticated">
           <mat-icon color="primary">check_circle</mat-icon>
           <span>Authenticated as: {{ currentUser()?.login }}</span>
@@ -45,139 +47,200 @@
       @if (!loading() && form) {
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="form-grid">
-            @for (column of columns(); track column.id) {
-              <!-- Checkbox fields (outside mat-form-field) -->
-              @if (getFieldType(column) === 'checkbox') {
-                <div class="checkbox-field">
-                  <mat-checkbox [formControlName]="column.id">
-                    {{ getFieldLabel(column) }}
-                  </mat-checkbox>
-                </div>
-              }
-
-              <!-- All other fields (inside mat-form-field) -->
-              @if (getFieldType(column) !== 'checkbox') {
-                <!-- Select/Dropdown (only when options exist) -->
-                @if ((getFieldType(column) === 'select' || getFieldType(column) === 'lookup') && !column.format.isArray && hasSelectOptions(column)) {
+            @for (column of columns(); track column.name) {
+              @if (column.format.isArray) {
+                <!-- Array fields with predefined options - multi-select dropdown -->
+                @if (column.format.options?.length) {
                   <mat-form-field
                     appearance="outline"
                     [class.required]="isFieldRequired(column)">
-                    <mat-label>{{ getFieldLabel(column) }}</mat-label>
+                    <mat-label>{{ column.name }}</mat-label>
                     <mat-select
-                      [formControlName]="column.id"
+                      [formControlName]="column.name"
                       [required]="isFieldRequired(column)"
-                      placeholder="Select">
-                      @for (option of getSelectOptions(column); track option) {
-                        <mat-option [value]="option">
-                          {{ option }}
-                        </mat-option>
+                      panelClass="policy-form-select-panel"
+                      multiple>
+                      @for (option of column.format.options; track option) {
+                        <mat-option [value]="option">{{ option }}</mat-option>
                       }
                     </mat-select>
-                    @if (form.get(column.id)?.hasError('required')) {
+                    @if (form.get(column.name)?.hasError('required')) {
                       <mat-error>
-                        {{ getFieldLabel(column) }} is required
+                        {{ column.name }} is required
                       </mat-error>
                     }
                   </mat-form-field>
-                }
-
-                <!-- Text input fallback for select/lookup with no options -->
-                @if ((getFieldType(column) === 'select' || getFieldType(column) === 'lookup') && !column.format.isArray && !hasSelectOptions(column)) {
+                } @else {
+                  <!-- Array fields without predefined options - text input fallback -->
                   <mat-form-field
                     appearance="outline"
                     [class.required]="isFieldRequired(column)">
-                    <mat-label>{{ getFieldLabel(column) }}</mat-label>
+                    <mat-label>{{ column.name }}</mat-label>
                     <input
                       matInput
-                      [formControlName]="column.id"
-                      [required]="isFieldRequired(column)"
-                    />
-                    @if (form.get(column.id)?.hasError('required')) {
-                      <mat-error>
-                        {{ getFieldLabel(column) }} is required
-                      </mat-error>
-                    }
-                  </mat-form-field>
-                }
-
-                <!-- Number Input -->
-                @if (getFieldType(column) === 'number') {
-                  <mat-form-field
-                    appearance="outline"
-                    [class.required]="isFieldRequired(column)">
-                    <mat-label>{{ getFieldLabel(column) }}</mat-label>
-                    <input
-                      matInput
-                      type="number"
-                      [formControlName]="column.id"
-                      [required]="isFieldRequired(column)"
-                    />
-                    @if (form.get(column.id)?.hasError('required')) {
-                      <mat-error>
-                        {{ getFieldLabel(column) }} is required
-                      </mat-error>
-                    }
-                  </mat-form-field>
-                }
-
-                <!-- Textarea for long text fields -->
-                @if (getFieldType(column) === 'text' && !column.format.isArray && (column.name.length > 50 || column.name.toLowerCase().includes('reason') || column.name.toLowerCase().includes('description') || column.name.toLowerCase().includes('note'))) {
-                  <mat-form-field
-                    appearance="outline"
-                    [class.required]="isFieldRequired(column)">
-                    <mat-label>{{ getFieldLabel(column) }}</mat-label>
-                    <textarea
-                      matInput
-                      [formControlName]="column.id"
-                      rows="3"
-                      [required]="isFieldRequired(column)"
-                    ></textarea>
-                    @if (form.get(column.id)?.hasError('required')) {
-                      <mat-error>
-                        {{ getFieldLabel(column) }} is required
-                      </mat-error>
-                    }
-                  </mat-form-field>
-                }
-
-                <!-- Array fields - text input with comma-separated values -->
-                @if (column.format.isArray) {
-                  <mat-form-field
-                    appearance="outline"
-                    [class.required]="isFieldRequired(column)">
-                    <mat-label>{{ getFieldLabel(column) }}</mat-label>
-                    <input
-                      matInput
-                      [formControlName]="column.id"
+                      [formControlName]="column.name"
                       [required]="isFieldRequired(column)"
                       placeholder="Comma-separated values"
                     />
                     <mat-hint>Enter comma-separated values</mat-hint>
-                    @if (form.get(column.id)?.hasError('required')) {
+                    @if (form.get(column.name)?.hasError('required')) {
                       <mat-error>
-                        {{ getFieldLabel(column) }} is required
+                        {{ column.name }} is required
                       </mat-error>
                     }
                   </mat-form-field>
                 }
+              } @else {
+                @switch (column.format.type) {
+                  @case ('checkbox') {
+                    <div class="checkbox-field">
+                      <mat-checkbox [formControlName]="column.name">
+                        {{ column.name }}
+                      </mat-checkbox>
+                    </div>
+                  }
 
-                <!-- Default text input for all other types -->
-                @if (getFieldType(column) !== 'checkbox' && getFieldType(column) !== 'number' && getFieldType(column) !== 'select' && getFieldType(column) !== 'lookup' && !column.format.isArray && !(getFieldType(column) === 'text' && (column.name.length > 50 || column.name.toLowerCase().includes('reason') || column.name.toLowerCase().includes('description') || column.name.toLowerCase().includes('note')))) {
-                  <mat-form-field
-                    appearance="outline"
-                    [class.required]="isFieldRequired(column)">
-                    <mat-label>{{ getFieldLabel(column) }}</mat-label>
-                    <input
-                      matInput
-                      [formControlName]="column.id"
-                      [required]="isFieldRequired(column)"
-                    />
-                    @if (form.get(column.id)?.hasError('required')) {
-                      <mat-error>
-                        {{ getFieldLabel(column) }} is required
-                      </mat-error>
+                  @case ('select') {
+                    @if (hasSelectOptions(column)) {
+                      <mat-form-field
+                        appearance="outline"
+                        [class.required]="isFieldRequired(column)">
+                        <mat-label>{{ column.name }}</mat-label>
+                        <mat-select
+                          [formControlName]="column.name"
+                          [required]="isFieldRequired(column)"
+                          panelClass="policy-form-select-panel"
+                          placeholder="Select">
+                          @for (option of getSelectOptions(column); track option) {
+                            <mat-option [value]="option">
+                              {{ option }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                        @if (form.get(column.name)?.hasError('required')) {
+                          <mat-error>
+                            {{ column.name }} is required
+                          </mat-error>
+                        }
+                      </mat-form-field>
+                    } @else {
+                      <mat-form-field
+                        appearance="outline"
+                        [class.required]="isFieldRequired(column)">
+                        <mat-label>{{ column.name }}</mat-label>
+                        <input
+                          matInput
+                          [formControlName]="column.name"
+                          [required]="isFieldRequired(column)"
+                        />
+                        @if (form.get(column.name)?.hasError('required')) {
+                          <mat-error>
+                            {{ column.name }} is required
+                          </mat-error>
+                        }
+                      </mat-form-field>
                     }
-                  </mat-form-field>
+                  }
+
+                  <!-- lookup renders identically to select -->
+                  @case ('lookup') {
+                    @if (hasSelectOptions(column)) {
+                      <mat-form-field
+                        appearance="outline"
+                        [class.required]="isFieldRequired(column)">
+                        <mat-label>{{ column.name }}</mat-label>
+                        <mat-select
+                          [formControlName]="column.name"
+                          [required]="isFieldRequired(column)"
+                          panelClass="policy-form-select-panel"
+                          placeholder="Select">
+                          @for (option of getSelectOptions(column); track option) {
+                            <mat-option [value]="option">
+                              {{ option }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                        @if (form.get(column.name)?.hasError('required')) {
+                          <mat-error>
+                            {{ column.name }} is required
+                          </mat-error>
+                        }
+                      </mat-form-field>
+                    } @else {
+                      <mat-form-field
+                        appearance="outline"
+                        [class.required]="isFieldRequired(column)">
+                        <mat-label>{{ column.name }}</mat-label>
+                        <input
+                          matInput
+                          [formControlName]="column.name"
+                          [required]="isFieldRequired(column)"
+                        />
+                        @if (form.get(column.name)?.hasError('required')) {
+                          <mat-error>
+                            {{ column.name }} is required
+                          </mat-error>
+                        }
+                      </mat-form-field>
+                    }
+                  }
+
+                  @case ('number') {
+                    <mat-form-field
+                      appearance="outline"
+                      [class.required]="isFieldRequired(column)">
+                      <mat-label>{{ column.name }}</mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        [formControlName]="column.name"
+                        [required]="isFieldRequired(column)"
+                      />
+                      @if (form.get(column.name)?.hasError('required')) {
+                        <mat-error>
+                          {{ column.name }} is required
+                        </mat-error>
+                      }
+                    </mat-form-field>
+                  }
+
+                  @default {
+                    <!-- Textarea for long text fields, regular input otherwise -->
+                    @if (isLongTextField(column)) {
+                      <mat-form-field
+                        appearance="outline"
+                        [class.required]="isFieldRequired(column)">
+                        <mat-label>{{ column.name }}</mat-label>
+                        <textarea
+                          matInput
+                          [formControlName]="column.name"
+                          rows="3"
+                          [required]="isFieldRequired(column)"
+                        ></textarea>
+                        @if (form.get(column.name)?.hasError('required')) {
+                          <mat-error>
+                            {{ column.name }} is required
+                          </mat-error>
+                        }
+                      </mat-form-field>
+                    } @else {
+                      <mat-form-field
+                        appearance="outline"
+                        [class.required]="isFieldRequired(column)">
+                        <mat-label>{{ column.name }}</mat-label>
+                        <input
+                          matInput
+                          [formControlName]="column.name"
+                          [required]="isFieldRequired(column)"
+                        />
+                        @if (form.get(column.name)?.hasError('required')) {
+                          <mat-error>
+                            {{ column.name }} is required
+                          </mat-error>
+                        }
+                      </mat-form-field>
+                    }
+                  }
                 }
               }
             }

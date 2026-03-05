@@ -16,31 +16,27 @@ export const authGuard: CanActivateFn = (route, _state) => {
     return true;
   }
 
-  // Show authentication dialog and wait for result
   const dialogRef = dialog.open(TokenDialogComponent, {
     width: '450px',
     disableClose: false,
     autoFocus: true
   });
 
-  // Return an Observable that resolves based on dialog result
   return dialogRef.afterClosed().pipe(
     map(token => {
       if (token) {
         githubService.setAccessToken(token);
-        return true; // Allow navigation
+        return true;
       } else {
-        // Navigate back to the appropriate table view based on route parameter
         const tableType = route.params['table'];
         if (tableType === 'tableA') {
           router.navigate(['/data/all-potentially-relevant-ai-policies-reviewed']);
         } else if (tableType === 'tableB') {
           router.navigate(['/data/policy-analysis']);
         } else {
-          // Fallback: go back in history if possible, otherwise navigate to data
           location.back();
         }
-        return false; // Block navigation
+        return false;
       }
     })
   );

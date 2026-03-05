@@ -1,4 +1,3 @@
-<!-- app.html -->
 <mat-sidenav-container>
   <mat-sidenav mode="side" opened>
     <mat-nav-list>
@@ -8,6 +7,12 @@
       <mat-list-item [routerLink]="'/'" routerLinkActive="active" class="welcome-menu-trigger" tabindex="0" role="button">
         <mat-icon matListItemIcon>home</mat-icon>
         <span matListItemTitle>Welcome</span>
+      </mat-list-item>
+
+      <!-- Summary Stats Link -->
+      <mat-list-item [routerLink]="'/summary'" routerLinkActive="active" tabindex="0" role="button">
+        <mat-icon matListItemIcon>bar_chart</mat-icon>
+        <span matListItemTitle>Summary Stats</span>
       </mat-list-item>
 
       <!-- Dashboard Menu -->

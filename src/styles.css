@@ -39,7 +39,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .table-wrapper {
   overflow: hidden;
-  max-height: 87vh;
+  flex: 1;
+  min-height: 0;
 }
 
 .table-summary {
@@ -209,19 +210,22 @@ app-policy-form .checkbox-field .mdc-form-field {
 
 /* Policy form - select dropdown panel */
 .policy-form-select-panel.mat-mdc-select-panel {
-  max-height: 200px;
+  max-height: 300px;
+  min-width: 400px !important;
+  max-width: 600px !important;
 }
 
 .policy-form-select-panel .mat-mdc-option {
   font-size: 0.8rem;
   min-height: 36px;
-  padding: 0 12px;
+  height: auto !important;
+  padding: 6px 12px;
 }
 
 .policy-form-select-panel .mat-mdc-option .mdc-list-item__primary-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal !important;
+  word-break: break-word;
+  line-height: 1.4;
 }
 
 /* Data table - column grid checkbox overrides */
@@ -321,4 +325,45 @@ app-policy-form .checkbox-field .mdc-form-field {
   flex: 1 !important;
   min-width: 0 !important;
   max-width: 100% !important;
+}
+
+/* Handsontable menus/dropdowns: wider filter menu */
+.handsontable.htMenu,
+.handsontable.htDropdownMenu {
+  min-width: 350px !important;
+}
+
+/* Make all inner containers fill the menu width */
+.handsontable.htMenu .htMenuFiltering,
+.handsontable.htDropdownMenu .htMenuFiltering,
+.handsontable.htMenu .htUIMultipleSelect,
+.handsontable.htDropdownMenu .htUIMultipleSelect {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.handsontable.htMenu .htMenuFiltering input,
+.handsontable.htDropdownMenu .htMenuFiltering input {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Filter condition dropdowns should use full width */
+.handsontable.htMenu td,
+.handsontable.htDropdownMenu td {
+  width: 100% !important;
+}
+
+/* Checkbox list items should not be clipped */
+.handsontable .htUIMultipleSelect .ht_master .wtHolder .wtHider {
+  width: 100% !important;
+}
+
+.handsontable .htFiltersMenuValue .htUIMultipleSelect label,
+.handsontable .htUIMultipleSelect label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
 }
