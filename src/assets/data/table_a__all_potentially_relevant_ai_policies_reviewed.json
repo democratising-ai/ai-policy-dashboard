@@ -366,6 +366,21 @@
         "type": "lookup",
         "isArray": true
       }
+    },
+    {
+      "id": "c-1773293733379-pfb29",
+      "name": "Age Group",
+      "format": {
+        "type": "select",
+        "isArray": true,
+        "options": [
+          "0-8",
+          "9-16",
+          "17-38",
+          "39-56",
+          "57 and older"
+        ]
+      }
     }
   ],
   "rows": [
