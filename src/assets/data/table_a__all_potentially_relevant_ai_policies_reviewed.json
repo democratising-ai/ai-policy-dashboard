@@ -13611,6 +13611,69 @@
       "index": 9,
       "createdAt": "2024-05-18T00:05:19.692Z",
       "updatedAt": "2024-06-04T22:34:03.751Z"
+    },
+    {
+      "values": {
+        "Policy Name": "123 AI",
+        "Policy creator": [
+          "Australia",
+          "USA"
+        ],
+        "Category of creator": "Non-OECD",
+        "Title": "New AI Policy",
+        "Year of Commencement or Creation": "2027",
+        "Relevant?": "Yes",
+        "File": [
+          "AI.pdf",
+          "123.docx"
+        ],
+        "Relevance Type": [
+          "Policy is about AI in education",
+          "Policy has an AI in education component",
+          "Policy makes fleeting reference to AI in education"
+        ],
+        "What kinds of education, if any, are contemplated by the policy?": [
+          "Primary",
+          "Tertiary",
+          "Does Not Specify"
+        ],
+        "Principles on AI in education": [
+          "[N/A: Expressed at a high level of abstraction and does not specifically engage with AI in education]"
+        ],
+        "Governance practices employed": [
+          "Guides impact assessment. It helps officials anticipate or evaluate the impact of AI",
+          "Proposes law. It proposes a law or provides a draft law on AI"
+        ],
+        "Opportunity and risk orientation": "Divides focus relatively evenly between risk and opportunity",
+        "Key quotes on AI in education principles": "key note",
+        "Does the policy reflect the principle of human rights compatibility?": "Yes — as the objective or justification of the policy (the primary objective or justification)",
+        "Key quote on human rights": "note key",
+        "Does the policy reflect the principle of equity/equality?": "No",
+        "Key quote on equity/equality": "equal note",
+        "General principles on AI": [
+          "Accountability. It should always be clear who is accountable for the use of AI, which entails clarity about who must report negative impacts, who must reduce negative impacts, and who must provide redress.",
+          "Competition. There should be sufficient diversity in the AI market to ensure that providers do not have excessive market power."
+        ],
+        "Analysis Complete": true,
+        "Link (OECD or Other)": "22221.com",
+        "Series #": 22221,
+        "Draft Analysis Complete": true,
+        "Reasons for non-inclusion (other than \"Irrelevant\")": "Would have been relevant but superseded",
+        "Weekend": false,
+        "Key quotes on general AI principles": "all",
+        "WC Favourite": true,
+        "Notable Case Studes - Examples of AI in Education": "\"+\"",
+        "Other Points of Interest": "-",
+        "Translation Comments": "Translation Completed (Google Translate)",
+        "Record Entered By": [
+          "Anton Inkin"
+        ]
+      },
+      "id": "new-1773293564309-s3113",
+      "name": "123 AI",
+      "index": 247,
+      "createdAt": "2026-03-12T05:32:44.309Z",
+      "updatedAt": "2026-03-12T05:32:44.309Z"
     }
   ]
 }
