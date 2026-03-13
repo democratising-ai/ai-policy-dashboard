@@ -13736,6 +13736,28 @@
       "index": 248,
       "createdAt": "2026-03-12T05:40:43.773Z",
       "updatedAt": "2026-03-12T05:40:43.773Z"
+    },
+    {
+      "values": {
+        "Policy Name": "New Check\"123\"<\"123\">",
+        "Title": "s12'fghdf' ",
+        "Reasons for inclusion in / exclusion from our \"Approaches to Governing AI in Education\" table": "dfgdfgggggggggggggggggggggggdffffffffffffffffffffffffffffffffffffffffff ",
+        "Relevance Type": [],
+        "What kinds of education, if any, are contemplated by the policy?": [],
+        "Principles on AI in education": [],
+        "Governance practices employed": [],
+        "General principles on AI": [],
+        "Analysis Complete": false,
+        "Draft Analysis Complete": false,
+        "Weekend": false,
+        "WC Favourite": false,
+        "Age Group": []
+      },
+      "id": "new-1773360933285-mqwpj",
+      "name": "New Check\"123\"<\"123\">",
+      "index": 249,
+      "createdAt": "2026-03-13T00:15:33.285Z",
+      "updatedAt": "2026-03-13T00:15:33.285Z"
     }
   ]
 }
