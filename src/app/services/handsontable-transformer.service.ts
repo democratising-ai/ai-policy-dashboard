@@ -114,4 +114,59 @@ export class HandsontableTransformerService {
   getOriginalRow(transformedRow: Record<string, any>): FlexibleRow | null {
     return transformedRow?.['__originalRow'] || null;
   }
+
+  /**
+   * Returns column configs toggled for edit mode.
+   * Dropdown columns get `type: 'dropdown'` with `source` options;
+   * checkbox columns stay as checkboxes; others become editable text.
+   */
+  getEditableColumns(columns: FlexibleColumn[], editMode: boolean): HandsontableColumnConfig[] {
+    return columns.map(col => {
+      const config: HandsontableColumnConfig = {
+        data: col.name,
+        readOnly: !editMode
+      };
+
+      if (col.format?.isArray) {
+        config.dropdownMenu = [
+          'filter_by_condition',
+          'filter_operators',
+          'filter_by_condition2',
+          'filter_action_bar'
+        ];
+      }
+
+      if (!editMode) {
+        switch (col.format?.type) {
+          case 'checkbox':
+            config.type = 'checkbox';
+            break;
+          case 'number':
+            config.type = 'numeric';
+            break;
+          case 'link':
+          case 'url':
+            config.renderer = 'html';
+            break;
+          default:
+            config.type = 'text';
+        }
+        return config;
+      }
+
+      // Edit mode configs
+      if (col.format?.type === 'checkbox') {
+        config.type = 'checkbox';
+      } else if (col.format?.type === 'number') {
+        config.type = 'numeric';
+      } else if (col.format?.options?.length && !col.format.isArray) {
+        config.type = 'dropdown';
+        (config as any).source = col.format.options;
+      } else {
+        config.type = 'text';
+      }
+
+      return config;
+    });
+  }
 }

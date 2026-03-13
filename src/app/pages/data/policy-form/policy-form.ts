@@ -1,5 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgClass } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +23,7 @@ import { InputSanitizerService } from '../../../services/input-sanitizer.service
   selector: 'app-policy-form',
   standalone: true,
   imports: [
+    NgClass,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -69,6 +71,9 @@ export class PolicyFormComponent {
         if (this.isValidRowId(rawId)) {
           this.isEditMode.set(true);
           this.rowId.set(rawId);
+          if (this.tableData()) {
+            this.buildForm();
+          }
         } else {
           this.snackBar.open('Invalid row ID parameter', 'Close', { duration: 3000 });
           this.router.navigate(['/data']);
@@ -85,7 +90,7 @@ export class PolicyFormComponent {
 
   loadTableData() {
     this.loading.set(true);
-    const data = this.policyDataService.getData('tableA');
+    const data = this.policyDataService.getData(this.tableType());
 
     this.tableData.set(data);
     this.columns.set(data.columns);
@@ -191,6 +196,8 @@ export class PolicyFormComponent {
       const normalized = this.normalizeFormValue(column, value);
       if (normalized !== undefined) {
         rowData.values[column.name] = normalized;
+      } else if (this.isEditMode()) {
+        rowData.values[column.name] = column.format.isArray ? [] : '';
       }
     });
 
@@ -234,7 +241,9 @@ export class PolicyFormComponent {
         this.submitting.set(false);
         let errorMessage = error.error?.message || error.message || 'Failed to submit form';
 
-        if (errorMessage.includes('404') || errorMessage.includes('not found')) {
+        if (errorMessage.includes('Conflict')) {
+          errorMessage = 'The data was modified by someone else. Please refresh and try again.';
+        } else if (errorMessage.includes('404') || errorMessage.includes('not found')) {
           errorMessage = 'File not found. Please verify the file exists in the repository.';
         } else if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
           errorMessage = 'Authentication failed. Please check your Personal Access Token.';
@@ -267,6 +276,16 @@ export class PolicyFormComponent {
            column.name.toLowerCase().includes('reason') ||
            column.name.toLowerCase().includes('description') ||
            column.name.toLowerCase().includes('note');
+  }
+
+  laneClass(column: FlexibleColumn): string | null {
+    const name = (column.name || '').trim().toLowerCase();
+    const rightLane = new Set(['analysis complete', 'weekend', 'wc favourite']);
+    const leftLane = new Set(['series', 'draft analysis complete']);
+
+    if (rightLane.has(name)) return 'lane-right';
+    if (leftLane.has(name)) return 'lane-left';
+    return null;
   }
 
   /**

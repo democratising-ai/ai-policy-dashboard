@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { FlexibleColumn } from './data.models';
 
 export interface GitHubUser {
   login: string;
@@ -212,13 +213,8 @@ export class GitHubService {
     return this.http.put(url, body, { headers });
   }
 
-  /**
-   * Add a new row to a JSON data file by appending only.
-   * Inserts new lines without rewriting existing content, avoiding spurious
-   * diffs (e.g. line-ending or encoding changes) when pushing to GitHub.
-   */
   addRowToTable(
-    tableFile: string,
+    _tableFile: string,
     newRow: any
   ): Observable<any> {
     const filePath = 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
@@ -230,7 +226,7 @@ export class GitHubService {
           const raw = fileData.content;
           const now = new Date().toISOString();
 
-          const newId = `new-${Date.now()}`;
+          const newId = `new-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
           const rowToAdd: any = {
             values: newRow.values || {},
             id: newId,
@@ -240,29 +236,33 @@ export class GitHubService {
             updatedAt: now
           };
 
+          data.rows.push(rowToAdd);
+
           const userName = this.currentUser()?.login || 'User';
-          const commitMessage = `Add new row to ${tableFile} by ${userName}`;
+          const commitMessage = `Add new policy row by ${userName}`;
 
           const lineEnding = raw.includes('\r\n') ? '\r\n' : '\n';
-          const endPattern = new RegExp(`    \\}${lineEnding}  \\]${lineEnding}\\}${lineEnding}?$`);
-          if (!endPattern.test(raw)) {
-            return throwError(() => new Error('Unexpected JSON structure: could not find rows end'));
+          let updated = JSON.stringify(data, null, 2) + '\n';
+          if (lineEnding === '\r\n') {
+            updated = updated.replace(/\n/g, '\r\n');
           }
-
-          const newRowJson = JSON.stringify(rowToAdd, null, 2);
-          const indented = newRowJson.split('\n').map(line => '    ' + line).join(lineEnding);
-          const updated = raw.replace(endPattern, '    },' + lineEnding + indented + lineEnding + '  ]' + lineEnding + '}' + lineEnding);
 
           return this.updateFile(filePath, updated, commitMessage, fileData.sha);
         } catch (error) {
           return throwError(() => new Error('Failed to parse JSON data'));
         }
+      }),
+      catchError(error => {
+        if (error.status === 409) {
+          return throwError(() => new Error('Conflict: the file was modified by someone else. Please try again.'));
+        }
+        return throwError(() => error);
       })
     );
   }
 
   updateRowInTable(
-    tableFile: string,
+    _tableFile: string,
     rowId: string,
     updatedRow: any
   ): Observable<any> {
@@ -272,6 +272,7 @@ export class GitHubService {
       switchMap(fileData => {
         try {
           const data = JSON.parse(fileData.content);
+          const raw = fileData.content;
 
           const rowIndex = data.rows.findIndex((r: any) => r.id === rowId);
           if (rowIndex === -1) {
@@ -280,18 +281,131 @@ export class GitHubService {
 
           data.rows[rowIndex] = {
             ...data.rows[rowIndex],
-            ...updatedRow,
+            values: { ...data.rows[rowIndex].values, ...(updatedRow.values || {}) },
+            name: updatedRow.name || data.rows[rowIndex].name,
             id: rowId,
             updatedAt: new Date().toISOString()
           };
 
           const userName = this.currentUser()?.login || 'User';
-          const commitMessage = `Update row ${rowId} in ${tableFile} by ${userName}`;
+          const commitMessage = `Update policy row ${rowId} by ${userName}`;
 
-          return this.updateFile(filePath, JSON.stringify(data, null, 2), commitMessage, fileData.sha);
+          const lineEnding = raw.includes('\r\n') ? '\r\n' : '\n';
+          let updated = JSON.stringify(data, null, 2) + '\n';
+          if (lineEnding === '\r\n') {
+            updated = updated.replace(/\n/g, '\r\n');
+          }
+
+          return this.updateFile(filePath, updated, commitMessage, fileData.sha);
         } catch (error) {
           return throwError(() => new Error('Failed to parse JSON data'));
         }
+      }),
+      catchError(error => {
+        if (error.status === 409) {
+          return throwError(() => new Error('Conflict: the file was modified by someone else. Please try again.'));
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Update multiple rows in a single commit to avoid race conditions.
+   */
+  updateMultipleRows(
+    _tableFile: string,
+    updates: { id: string; values: Record<string, any> }[]
+  ): Observable<any> {
+    const filePath = 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
+
+    return this.getFileContent(filePath).pipe(
+      switchMap(fileData => {
+        try {
+          const data = JSON.parse(fileData.content);
+          const raw = fileData.content;
+          const now = new Date().toISOString();
+
+          for (const update of updates) {
+            const rowIndex = data.rows.findIndex((r: any) => r.id === update.id);
+            if (rowIndex === -1) {
+              return throwError(() => new Error(`Row not found: ${update.id}`));
+            }
+            data.rows[rowIndex] = {
+              ...data.rows[rowIndex],
+              values: { ...data.rows[rowIndex].values, ...update.values },
+              updatedAt: now
+            };
+          }
+
+          const userName = this.currentUser()?.login || 'User';
+          const commitMessage = `Update ${updates.length} policy row(s) by ${userName}`;
+
+          const lineEnding = raw.includes('\r\n') ? '\r\n' : '\n';
+          let updated = JSON.stringify(data, null, 2) + '\n';
+          if (lineEnding === '\r\n') {
+            updated = updated.replace(/\n/g, '\r\n');
+          }
+
+          return this.updateFile(filePath, updated, commitMessage, fileData.sha);
+        } catch (error) {
+          return throwError(() => new Error('Failed to parse JSON data'));
+        }
+      }),
+      catchError(error => {
+        if (error.status === 409) {
+          return throwError(() => new Error('Conflict: the file was modified by someone else. Please try again.'));
+        }
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Add a new column definition to the table JSON file.
+   */
+  addColumnToTable(columnDef: FlexibleColumn): Observable<any> {
+    const filePath = 'src/assets/data/table_a__all_potentially_relevant_ai_policies_reviewed.json';
+
+    return this.getFileContent(filePath).pipe(
+      switchMap(fileData => {
+        try {
+          const data = JSON.parse(fileData.content);
+          const raw = fileData.content;
+
+          const exists = data.columns.some((c: any) =>
+            c.name.toLowerCase() === columnDef.name.toLowerCase()
+          );
+          if (exists) {
+            return throwError(() => new Error(`Column "${columnDef.name}" already exists`));
+          }
+
+          const newColumn: any = {
+            id: `c-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+            name: columnDef.name,
+            format: columnDef.format
+          };
+          data.columns.push(newColumn);
+
+          const userName = this.currentUser()?.login || 'User';
+          const commitMessage = `Add column "${columnDef.name}" by ${userName}`;
+
+          const lineEnding = raw.includes('\r\n') ? '\r\n' : '\n';
+          let updated = JSON.stringify(data, null, 2) + '\n';
+          if (lineEnding === '\r\n') {
+            updated = updated.replace(/\n/g, '\r\n');
+          }
+
+          return this.updateFile(filePath, updated, commitMessage, fileData.sha);
+        } catch (error) {
+          return throwError(() => new Error('Failed to parse JSON data'));
+        }
+      }),
+      catchError(error => {
+        if (error.status === 409) {
+          return throwError(() => new Error('Conflict: the file was modified by someone else. Please try again.'));
+        }
+        return throwError(() => error);
       })
     );
   }

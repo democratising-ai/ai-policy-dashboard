@@ -2,8 +2,25 @@
   [tableData]="data()"
   [loading]="loading()"
   [error]="error()"
+  [editable]="isAuthenticated()"
   tableTitle="Table A: All Potentially Relevant AI Policies Reviewed"
   addButtonRoute="/data/policy-form/tableA"
   (rowClick)="onRowClick($event)"
+  (saveChanges)="onSaveChanges($event)"
+  (addColumn)="onAddColumn()"
   (retry)="loadData()">
+  <div tableHeaderActions class="auth-bar">
+    @if (isAuthenticated()) {
+      <span class="auth-user">{{ currentUser()?.login }}</span>
+      <button mat-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    } @else {
+      <button mat-raised-button color="primary" (click)="authenticate()">
+        <mat-icon>login</mat-icon>
+        Authenticate with GitHub
+      </button>
+    }
+  </div>
 </app-hot-table>

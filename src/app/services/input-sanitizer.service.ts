@@ -130,7 +130,7 @@ export class InputSanitizerService {
 
   private sanitizeKey(key: string): string {
     return key
-      .replace(/[<>'"\\]/g, '')
+      .replace(/[<>\\]/g, '')
       .replace(/[\x00-\x1f\x7f]/g, '')
       .trim()
       .substring(0, 256);

@@ -1,11 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +44,16 @@ import { MatMenuModule } from '@angular/material/menu';
 export class AppComponent {
   title = 'Education and AI Policy Commons';
   private router = inject(Router);
+  showSidebar = signal(true);
+
+  constructor() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe((event) => {
+      this.showSidebar.set(!event.url.includes('policy-form'));
+    });
+  }
 
   navigateToWelcome() {
     this.router.navigate(['/']);

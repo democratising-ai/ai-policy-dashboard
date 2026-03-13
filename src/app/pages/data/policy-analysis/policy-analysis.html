@@ -2,8 +2,10 @@
   [tableData]="data()"
   [loading]="loading()"
   [error]="error()"
+  [editable]="isAuthenticated()"
   tableTitle="Table B: Policy Analysis Data"
-
   (rowClick)="onRowClick($event)"
+  (saveChanges)="onSaveChanges($event)"
+  (addColumn)="onAddColumn()"
   (retry)="loadData()">
 </app-hot-table>

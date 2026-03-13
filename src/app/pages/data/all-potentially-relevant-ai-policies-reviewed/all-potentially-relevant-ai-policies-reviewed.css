@@ -1,1 +1,18 @@
 @import '../shared/data-table.css';
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.auth-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-user {
+  font-size: 0.813rem;
+  color: #495057;
+  font-weight: 500;
+}

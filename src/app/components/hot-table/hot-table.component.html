@@ -1,5 +1,8 @@
 <div class="hot-table-container">
-  <h2>{{ tableTitle() }}</h2>
+  <div class="table-header">
+    <h2>{{ tableTitle() }}</h2>
+    <ng-content select="[tableHeaderActions]"></ng-content>
+  </div>
 
   <!-- Loading state -->
   @if (loading()) {
@@ -21,13 +24,48 @@
   @if (tableData(); as td) {
   @if (!loading()) {
     <div class="table-section">
-      <!-- Add New Button -->
-      @if (addButtonRoute(); as route) {
+      <!-- Action Bar -->
+      @if (editable()) {
         <div class="action-bar">
-          <a mat-raised-button color="primary" [routerLink]="route">
-            <mat-icon>add</mat-icon>
-            Add New Entry
-          </a>
+          <div class="edit-toolbar">
+            <div class="edit-toggle" [class.active]="editMode()">
+              <mat-slide-toggle
+                [checked]="editMode()"
+                (change)="toggleEditMode()"
+                color="primary">
+                Edit Mode
+              </mat-slide-toggle>
+            </div>
+
+            @if (editMode()) {
+              <button mat-raised-button (click)="onAddColumn()">
+                <mat-icon>add</mat-icon>
+                Add Column
+              </button>
+
+              @if (addButtonRoute(); as route) {
+                <a mat-raised-button color="primary" [routerLink]="route">
+                  <mat-icon>add</mat-icon>
+                  Add New Entry
+                </a>
+              }
+
+              @if (modifiedRows().size > 0) {
+                <button mat-raised-button color="primary" (click)="onSave()" [disabled]="saving()">
+                  @if (saving()) {
+                    <mat-spinner diameter="18"></mat-spinner>
+                  } @else {
+                    <mat-icon>save</mat-icon>
+                  }
+                  Save Changes ({{ modifiedRows().size }})
+                </button>
+                <button mat-button (click)="discardChanges()">
+                  <mat-icon>undo</mat-icon>
+                  Discard
+                </button>
+              }
+            }
+          </div>
         </div>
       }
 

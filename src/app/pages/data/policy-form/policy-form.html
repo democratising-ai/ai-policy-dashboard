@@ -1,5 +1,12 @@
 <div class="form-container">
-  <mat-card>
+  <div class="page-top">
+    <button mat-button class="back-button" (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to {{ tableType() === 'tableA' ? 'Table A' : 'Table B' }}
+    </button>
+  </div>
+
+  <mat-card class="policy-form-card">
     <mat-card-header>
       <mat-card-title>
         @if (isEditMode()) {
@@ -10,7 +17,7 @@
         }
       </mat-card-title>
       <mat-card-subtitle>
-        {{ tableType() === 'tableA' ? 'Table A' : 'Table B' }}
+        {{ tableType() === 'tableA' ? 'Table A' : 'Table B' }} · Required fields are marked with *
       </mat-card-subtitle>
     </mat-card-header>
 
@@ -45,7 +52,7 @@
 
       <!-- Form -->
       @if (!loading() && form) {
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <form class="policy-form" [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="form-grid">
             @for (column of columns(); track column.name) {
               @if (column.format.isArray) {
@@ -53,7 +60,9 @@
                 @if (column.format.options?.length) {
                   <mat-form-field
                     appearance="outline"
-                    [class.required]="isFieldRequired(column)">
+                    [class.required]="isFieldRequired(column)"
+                    [class.full-width]="isLongTextField(column)"
+                    [ngClass]="laneClass(column)">
                     <mat-label>{{ column.name }}</mat-label>
                     <mat-select
                       [formControlName]="column.name"
@@ -74,7 +83,9 @@
                   <!-- Array fields without predefined options - text input fallback -->
                   <mat-form-field
                     appearance="outline"
-                    [class.required]="isFieldRequired(column)">
+                    [class.required]="isFieldRequired(column)"
+                    [class.full-width]="isLongTextField(column)"
+                    [ngClass]="laneClass(column)">
                     <mat-label>{{ column.name }}</mat-label>
                     <input
                       matInput
@@ -93,7 +104,7 @@
               } @else {
                 @switch (column.format.type) {
                   @case ('checkbox') {
-                    <div class="checkbox-field">
+                    <div class="checkbox-field full-width" [ngClass]="laneClass(column)">
                       <mat-checkbox [formControlName]="column.name">
                         {{ column.name }}
                       </mat-checkbox>
@@ -104,7 +115,9 @@
                     @if (hasSelectOptions(column)) {
                       <mat-form-field
                         appearance="outline"
-                        [class.required]="isFieldRequired(column)">
+                        [class.required]="isFieldRequired(column)"
+                        [class.full-width]="isLongTextField(column)"
+                        [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <mat-select
                           [formControlName]="column.name"
@@ -126,7 +139,9 @@
                     } @else {
                       <mat-form-field
                         appearance="outline"
-                        [class.required]="isFieldRequired(column)">
+                        [class.required]="isFieldRequired(column)"
+                        [class.full-width]="isLongTextField(column)"
+                        [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <input
                           matInput
@@ -147,7 +162,9 @@
                     @if (hasSelectOptions(column)) {
                       <mat-form-field
                         appearance="outline"
-                        [class.required]="isFieldRequired(column)">
+                        [class.required]="isFieldRequired(column)"
+                        [class.full-width]="isLongTextField(column)"
+                        [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <mat-select
                           [formControlName]="column.name"
@@ -169,7 +186,9 @@
                     } @else {
                       <mat-form-field
                         appearance="outline"
-                        [class.required]="isFieldRequired(column)">
+                        [class.required]="isFieldRequired(column)"
+                        [class.full-width]="isLongTextField(column)"
+                        [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <input
                           matInput
@@ -188,7 +207,9 @@
                   @case ('number') {
                     <mat-form-field
                       appearance="outline"
-                      [class.required]="isFieldRequired(column)">
+                      [class.required]="isFieldRequired(column)"
+                      [class.full-width]="isLongTextField(column)"
+                      [ngClass]="laneClass(column)">
                       <mat-label>{{ column.name }}</mat-label>
                       <input
                         matInput
@@ -208,13 +229,14 @@
                     <!-- Textarea for long text fields, regular input otherwise -->
                     @if (isLongTextField(column)) {
                       <mat-form-field
-                        appearance="outline"
-                        [class.required]="isFieldRequired(column)">
+                        class="full-width"
+                        [class.required]="isFieldRequired(column)"
+                        [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <textarea
                           matInput
                           [formControlName]="column.name"
-                          rows="3"
+                          rows="2"
                           [required]="isFieldRequired(column)"
                         ></textarea>
                         @if (form.get(column.name)?.hasError('required')) {
@@ -226,7 +248,8 @@
                     } @else {
                       <mat-form-field
                         appearance="outline"
-                        [class.required]="isFieldRequired(column)">
+                        [class.required]="isFieldRequired(column)"
+                        [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <input
                           matInput
@@ -266,7 +289,7 @@
                 <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
                 <span>Submitting...</span>
               } @else {
-                <span>{{ isEditMode() ? 'Update' : 'Submit' }}</span>
+                <span>{{ isEditMode() ? 'Update entry' : 'Submit entry' }}</span>
               }
             </button>
           </div>

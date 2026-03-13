@@ -1,1 +1,6 @@
 @import '../shared/data-table.css';
+
+:host {
+  display: block;
+  height: 100%;
+}
