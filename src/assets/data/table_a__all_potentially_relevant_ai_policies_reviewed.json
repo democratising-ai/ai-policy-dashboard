@@ -13758,6 +13758,70 @@
       "index": 249,
       "createdAt": "2026-03-13T00:15:33.285Z",
       "updatedAt": "2026-03-13T00:15:33.285Z"
+    },
+    {
+      "values": {
+        "Policy Name": "aaa",
+        "Policy creator": [
+          "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "Category of creator": "OECD",
+        "Title": "aa",
+        "Year of Commencement or Creation": "d",
+        "Relevant?": "No",
+        "Reasons for inclusion in / exclusion from our \"Approaches to Governing AI in Education\" table": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "File": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "Relevance Type": [
+          "Policy has an AI in education component",
+          "Policy expresses principles or ideas that could inform the governance of AI in education"
+        ],
+        "What kinds of education, if any, are contemplated by the policy?": [
+          "Primary",
+          "Secondary",
+          "Vocational or Professional"
+        ],
+        "Principles on AI in education": [
+          "[N/A: This is an inquiry, and does not presuppose the answer to questions]",
+          "Accountability. It should always be clear who is accountable for the use of AI in educational settings, which entails clarity about who must report negative impacts, who must reduce negative impacts, and who must provide redress."
+        ],
+        "Governance practices employed": [
+          "Proposes law. It proposes a law or provides a draft law on AI",
+          "Incentivises. It encourages compliance with non-binding standards on AI (eg, through procurement norms)"
+        ],
+        "Opportunity and risk orientation": "Risk-focused (says significantly more about risk than opportunities)",
+        "Key quotes on AI in education principles": "a",
+        "Does the policy reflect the principle of human rights compatibility?": "Yes — as background information directly linked to the policy’s goals/aims/purpose",
+        "Key quote on human rights": "a",
+        "Does the policy reflect the principle of equity/equality?": "Yes — it talks about both (a) the risk of AI augmenting inequities/inequalities AND (b) AI as a tool for promoting equitable/equal access",
+        "Key quote on equity/equality": "a",
+        "General principles on AI": [
+          "Augmentation, not replacement. AI systems should augment, not displace, workers."
+        ],
+        "Analysis Complete": true,
+        "Link (OECD or Other)": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "Draft Analysis Complete": true,
+        "Reasons for non-inclusion (other than \"Irrelevant\")": "Cannot Access",
+        "Weekend": true,
+        "Key quotes on general AI principles": "aa",
+        "WC Favourite": true,
+        "Notable Case Studes - Examples of AI in Education": "aaaaaaaaaaaa",
+        "Other Points of Interest": "aaa",
+        "Translation Comments": "Translation Completed (Google Translate)",
+        "Record Entered By": [
+          "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "Age Group": [
+          "9-16",
+          "39-56"
+        ]
+      },
+      "id": "new-1773362648406-q3de5",
+      "name": "aaa",
+      "index": 250,
+      "createdAt": "2026-03-13T00:44:08.406Z",
+      "updatedAt": "2026-03-13T00:44:08.406Z"
     }
   ]
 }
