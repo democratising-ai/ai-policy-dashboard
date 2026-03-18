@@ -366,34 +366,6 @@
         "type": "lookup",
         "isArray": true
       }
-    },
-    {
-      "id": "c-1773293733379-pfb29",
-      "name": "Age Group",
-      "format": {
-        "type": "select",
-        "isArray": true,
-        "options": [
-          "0-8",
-          "9-16",
-          "17-38",
-          "39-56",
-          "57 and older"
-        ]
-      }
-    },
-    {
-      "id": "c-1773362728623-zz9sd",
-      "name": "digit",
-      "format": {
-        "type": "number",
-        "isArray": true,
-        "options": [
-          "1",
-          "2",
-          "33"
-        ]
-      }
     }
   ],
   "rows": [
@@ -677,7 +649,9 @@
         "Policy creator": [
           "Sri Lanka"
         ],
-        "Category of creator": "OECD",
+        "Category of creator": [
+          ""
+        ],
         "Title": "Sri Lanka: Sri Lanka's National Strategy on AI",
         "Year of Commencement or Creation": "2024",
         "Relevant?": "Yes",
@@ -739,7 +713,7 @@
       "name": "Sri Lanka: Sri Lanka's National Strategy on AI",
       "index": 490,
       "createdAt": "2025-04-29T08:07:44.766Z",
-      "updatedAt": "2026-03-12T05:28:42.842Z"
+      "updatedAt": "2025-04-29T08:30:26.654Z"
     },
     {
       "values": {
@@ -13639,202 +13613,6 @@
       "index": 9,
       "createdAt": "2024-05-18T00:05:19.692Z",
       "updatedAt": "2024-06-04T22:34:03.751Z"
-    },
-    {
-      "values": {
-        "Policy Name": "123 AI",
-        "Policy creator": [
-          "Australia",
-          "USA"
-        ],
-        "Category of creator": "Non-OECD",
-        "Title": "New AI Policy",
-        "Year of Commencement or Creation": "2027",
-        "Relevant?": "Yes",
-        "File": [
-          "AI.pdf",
-          "123.docx"
-        ],
-        "Relevance Type": [
-          "Policy is about AI in education",
-          "Policy has an AI in education component",
-          "Policy makes fleeting reference to AI in education"
-        ],
-        "What kinds of education, if any, are contemplated by the policy?": [
-          "Primary",
-          "Tertiary",
-          "Does Not Specify"
-        ],
-        "Principles on AI in education": [
-          "[N/A: Expressed at a high level of abstraction and does not specifically engage with AI in education]"
-        ],
-        "Governance practices employed": [
-          "Guides impact assessment. It helps officials anticipate or evaluate the impact of AI",
-          "Proposes law. It proposes a law or provides a draft law on AI"
-        ],
-        "Opportunity and risk orientation": "Divides focus relatively evenly between risk and opportunity",
-        "Key quotes on AI in education principles": "key note",
-        "Does the policy reflect the principle of human rights compatibility?": "Yes — as the objective or justification of the policy (the primary objective or justification)",
-        "Key quote on human rights": "note key",
-        "Does the policy reflect the principle of equity/equality?": "No",
-        "Key quote on equity/equality": "equal note",
-        "General principles on AI": [
-          "Accountability. It should always be clear who is accountable for the use of AI, which entails clarity about who must report negative impacts, who must reduce negative impacts, and who must provide redress.",
-          "Competition. There should be sufficient diversity in the AI market to ensure that providers do not have excessive market power."
-        ],
-        "Analysis Complete": true,
-        "Link (OECD or Other)": "22221.com",
-        "Series #": 22221,
-        "Draft Analysis Complete": true,
-        "Reasons for non-inclusion (other than \"Irrelevant\")": "Would have been relevant but superseded",
-        "Weekend": false,
-        "Key quotes on general AI principles": "all",
-        "WC Favourite": true,
-        "Notable Case Studes - Examples of AI in Education": "\"+\"",
-        "Other Points of Interest": "-",
-        "Translation Comments": "Translation Completed (Google Translate)",
-        "Record Entered By": [
-          "Anton Inkin"
-        ]
-      },
-      "id": "new-1773293564309-s3113",
-      "name": "123 AI",
-      "index": 247,
-      "createdAt": "2026-03-12T05:32:44.309Z",
-      "updatedAt": "2026-03-12T05:32:44.309Z"
-    },
-    {
-      "values": {
-        "Policy Name": "new ozzy nz ai",
-        "Policy creator": [
-          "AI"
-        ],
-        "Category of creator": "OECD",
-        "Title": "NZ and AU policy",
-        "Year of Commencement or Creation": "2025",
-        "Relevant?": "Yes",
-        "Reasons for inclusion in / exclusion from our Approaches to Governing AI in Education table": "asd",
-        "Relevance Type": [],
-        "What kinds of education, if any, are contemplated by the policy?": [],
-        "Principles on AI in education": [
-          "Accountability. It should always be clear who is accountable for the use of AI in educational settings, which entails clarity about who must report negative impacts, who must reduce negative impacts, and who must provide redress."
-        ],
-        "Governance practices employed": [
-          "Educates. It helps officials or others understand the opportunities and risks of AI",
-          "Proposes law. It proposes a law or provides a draft law on AI"
-        ],
-        "Opportunity and risk orientation": "Risk-focused (says significantly more about risk than opportunities)",
-        "Does the policy reflect the principle of human rights compatibility?": "Yes — as background information directly linked to the policy’s goals/aims/purpose",
-        "Does the policy reflect the principle of equity/equality?": "Yes — it talks about the risk of AI augmenting inequities/inequalities",
-        "General principles on AI": [
-          "Accountability. It should always be clear who is accountable for the use of AI, which entails clarity about who must report negative impacts, who must reduce negative impacts, and who must provide redress."
-        ],
-        "Analysis Complete": false,
-        "Series #": 22,
-        "Draft Analysis Complete": false,
-        "Reasons for non-inclusion (other than Irrelevant)": "Cannot Access",
-        "Weekend": false,
-        "Key quotes on general AI principles": "$ DAS f <sdafds f>",
-        "WC Favourite": false,
-        "Notable Case Studes - Examples of AI in Education": "^&&%**%",
-        "Translation Comments": "N/A - English",
-        "Age Group": [
-          "0-8",
-          "17-38",
-          "57 and older"
-        ]
-      },
-      "id": "new-1773294043773",
-      "name": "new ozzy nz ai",
-      "index": 248,
-      "createdAt": "2026-03-12T05:40:43.773Z",
-      "updatedAt": "2026-03-12T05:40:43.773Z"
-    },
-    {
-      "values": {
-        "Policy Name": "New Check\"123\"<\"123\">",
-        "Title": "s12'fghdf' ",
-        "Reasons for inclusion in / exclusion from our \"Approaches to Governing AI in Education\" table": "dfgdfgggggggggggggggggggggggdffffffffffffffffffffffffffffffffffffffffff ",
-        "Relevance Type": [],
-        "What kinds of education, if any, are contemplated by the policy?": [],
-        "Principles on AI in education": [],
-        "Governance practices employed": [],
-        "General principles on AI": [],
-        "Analysis Complete": false,
-        "Draft Analysis Complete": false,
-        "Weekend": false,
-        "WC Favourite": false,
-        "Age Group": []
-      },
-      "id": "new-1773360933285-mqwpj",
-      "name": "New Check\"123\"<\"123\">",
-      "index": 249,
-      "createdAt": "2026-03-13T00:15:33.285Z",
-      "updatedAt": "2026-03-13T00:15:33.285Z"
-    },
-    {
-      "values": {
-        "Policy Name": "aaa",
-        "Policy creator": [
-          "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
-        ],
-        "Category of creator": "OECD",
-        "Title": "aa",
-        "Year of Commencement or Creation": "d",
-        "Relevant?": "No",
-        "Reasons for inclusion in / exclusion from our \"Approaches to Governing AI in Education\" table": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        "File": [
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        ],
-        "Relevance Type": [
-          "Policy has an AI in education component",
-          "Policy expresses principles or ideas that could inform the governance of AI in education"
-        ],
-        "What kinds of education, if any, are contemplated by the policy?": [
-          "Primary",
-          "Secondary",
-          "Vocational or Professional"
-        ],
-        "Principles on AI in education": [
-          "[N/A: This is an inquiry, and does not presuppose the answer to questions]",
-          "Accountability. It should always be clear who is accountable for the use of AI in educational settings, which entails clarity about who must report negative impacts, who must reduce negative impacts, and who must provide redress."
-        ],
-        "Governance practices employed": [
-          "Proposes law. It proposes a law or provides a draft law on AI",
-          "Incentivises. It encourages compliance with non-binding standards on AI (eg, through procurement norms)"
-        ],
-        "Opportunity and risk orientation": "Risk-focused (says significantly more about risk than opportunities)",
-        "Key quotes on AI in education principles": "a",
-        "Does the policy reflect the principle of human rights compatibility?": "Yes — as background information directly linked to the policy’s goals/aims/purpose",
-        "Key quote on human rights": "a",
-        "Does the policy reflect the principle of equity/equality?": "Yes — it talks about both (a) the risk of AI augmenting inequities/inequalities AND (b) AI as a tool for promoting equitable/equal access",
-        "Key quote on equity/equality": "a",
-        "General principles on AI": [
-          "Augmentation, not replacement. AI systems should augment, not displace, workers."
-        ],
-        "Analysis Complete": true,
-        "Link (OECD or Other)": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "Draft Analysis Complete": true,
-        "Reasons for non-inclusion (other than \"Irrelevant\")": "Cannot Access",
-        "Weekend": true,
-        "Key quotes on general AI principles": "aa",
-        "WC Favourite": true,
-        "Notable Case Studes - Examples of AI in Education": "aaaaaaaaaaaa",
-        "Other Points of Interest": "aaa",
-        "Translation Comments": "Translation Completed (Google Translate)",
-        "Record Entered By": [
-          "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
-        ],
-        "Age Group": [
-          "9-16",
-          "39-56"
-        ]
-      },
-      "id": "new-1773362648406-q3de5",
-      "name": "aaa",
-      "index": 250,
-      "createdAt": "2026-03-13T00:44:08.406Z",
-      "updatedAt": "2026-03-13T00:44:08.406Z"
     }
   ]
 }
