@@ -87,12 +87,14 @@
                     [class.full-width]="isLongTextField(column)"
                     [ngClass]="laneClass(column)">
                     <mat-label>{{ column.name }}</mat-label>
-                    <input
+                    <textarea
                       matInput
+                      cdkTextareaAutosize
+                      cdkAutosizeMinRows="1"
                       [formControlName]="column.name"
                       [required]="isFieldRequired(column)"
                       placeholder="Comma-separated values"
-                    />
+                    ></textarea>
                     <mat-hint>Enter comma-separated values</mat-hint>
                     @if (form.get(column.name)?.hasError('required')) {
                       <mat-error>
@@ -104,7 +106,7 @@
               } @else {
                 @switch (column.format.type) {
                   @case ('checkbox') {
-                    <div class="checkbox-field full-width" [ngClass]="laneClass(column)">
+                    <div class="checkbox-field" [ngClass]="laneClass(column) || 'full-width'">
                       <mat-checkbox [formControlName]="column.name">
                         {{ column.name }}
                       </mat-checkbox>
@@ -229,14 +231,16 @@
                     <!-- Textarea for long text fields, regular input otherwise -->
                     @if (isLongTextField(column)) {
                       <mat-form-field
+                        appearance="outline"
                         class="full-width"
                         [class.required]="isFieldRequired(column)"
                         [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
                         <textarea
                           matInput
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="2"
                           [formControlName]="column.name"
-                          rows="2"
                           [required]="isFieldRequired(column)"
                         ></textarea>
                         @if (form.get(column.name)?.hasError('required')) {
@@ -251,11 +255,13 @@
                         [class.required]="isFieldRequired(column)"
                         [ngClass]="laneClass(column)">
                         <mat-label>{{ column.name }}</mat-label>
-                        <input
+                        <textarea
                           matInput
+                          cdkTextareaAutosize
+                          cdkAutosizeMinRows="1"
                           [formControlName]="column.name"
                           [required]="isFieldRequired(column)"
-                        />
+                        ></textarea>
                         @if (form.get(column.name)?.hasError('required')) {
                           <mat-error>
                             {{ column.name }} is required

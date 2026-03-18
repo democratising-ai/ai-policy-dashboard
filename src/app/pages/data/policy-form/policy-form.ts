@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -34,7 +35,8 @@ import { InputSanitizerService } from '../../../services/input-sanitizer.service
     MatIconModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    TextFieldModule
   ],
   templateUrl: './policy-form.html',
   styleUrl: './policy-form.css'
@@ -98,7 +100,7 @@ export class PolicyFormComponent {
     if (this.isEditMode() && this.rowId()) {
       const row = data.rows.find(r => r.id === this.rowId());
       if (!row) {
-        this.snackBar.open('Row not found. It may have been deleted.', 'Close', { duration: 3000 });
+        this.snackBar.open('Policy not found. It may have been deleted.', 'Close', { duration: 3000 });
         this.isEditMode.set(false);
         this.rowId.set(null);
         this.router.navigate([this.tableRoute()]);
@@ -230,7 +232,7 @@ export class PolicyFormComponent {
       next: (response) => {
         this.submitting.set(false);
         this.snackBar.open(
-          this.isEditMode() ? 'Row updated successfully!' : 'Row added successfully!',
+          this.isEditMode() ? 'Policy updated successfully!' : 'Policy added successfully!',
           'Close',
           { duration: 3000 }
         );
@@ -280,8 +282,8 @@ export class PolicyFormComponent {
 
   laneClass(column: FlexibleColumn): string | null {
     const name = (column.name || '').trim().toLowerCase();
-    const rightLane = new Set(['analysis complete', 'weekend', 'wc favourite']);
-    const leftLane = new Set(['series', 'draft analysis complete']);
+    const leftLane = new Set(['weekend', 'analysis complete']);
+    const rightLane = new Set(['draft analysis complete', 'wc favourite']);
 
     if (rightLane.has(name)) return 'lane-right';
     if (leftLane.has(name)) return 'lane-left';

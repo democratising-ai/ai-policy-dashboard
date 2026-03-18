@@ -60,7 +60,7 @@ import { MatIconModule } from '@angular/material/icon';
 
       <p class="security-note">
         <mat-icon class="security-icon">security</mat-icon>
-        Your token is stored in session storage and will be cleared when you close the tab.
+        Your token is stored locally and expires after 8 hours of inactivity.
       </p>
     </mat-dialog-content>
 

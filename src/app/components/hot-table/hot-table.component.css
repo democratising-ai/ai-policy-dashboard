@@ -264,7 +264,7 @@
   white-space: nowrap;
   vertical-align: middle;
   line-height: 1.2;
-  color: #212529;
+  color: #000 !important;
 }
 
 /* Row hover - match mat-mdc-row:hover */

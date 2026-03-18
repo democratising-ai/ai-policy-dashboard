@@ -85,8 +85,8 @@ export class GitHubService {
   }
 
   private checkAuthentication(): void {
-    const token = sessionStorage.getItem(this.STORAGE_KEY);
-    const expiry = sessionStorage.getItem(this.TOKEN_EXPIRY_KEY);
+    const token = localStorage.getItem(this.STORAGE_KEY);
+    const expiry = localStorage.getItem(this.TOKEN_EXPIRY_KEY);
 
     if (token && expiry) {
       const expiryTime = parseInt(expiry, 10);
@@ -103,7 +103,7 @@ export class GitHubService {
 
   private refreshTokenExpiry(): void {
     const expiryTime = Date.now() + (this.TOKEN_EXPIRY_HOURS * 60 * 60 * 1000);
-    sessionStorage.setItem(this.TOKEN_EXPIRY_KEY, expiryTime.toString());
+    localStorage.setItem(this.TOKEN_EXPIRY_KEY, expiryTime.toString());
   }
 
   private authHeaders(token?: string): HttpHeaders {
@@ -129,7 +129,7 @@ export class GitHubService {
   }
 
   setAccessToken(token: string): void {
-    sessionStorage.setItem(this.STORAGE_KEY, token);
+    localStorage.setItem(this.STORAGE_KEY, token);
     this.refreshTokenExpiry();
     this.accessToken.set(token);
     this.isAuthenticated.set(true);
@@ -137,8 +137,8 @@ export class GitHubService {
   }
 
   logout(): void {
-    sessionStorage.removeItem(this.STORAGE_KEY);
-    sessionStorage.removeItem(this.TOKEN_EXPIRY_KEY);
+    localStorage.removeItem(this.STORAGE_KEY);
+    localStorage.removeItem(this.TOKEN_EXPIRY_KEY);
     this.accessToken.set(null);
     this.currentUser.set(null);
     this.isAuthenticated.set(false);

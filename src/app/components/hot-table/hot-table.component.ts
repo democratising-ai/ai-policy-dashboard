@@ -294,6 +294,7 @@ export class HotTableComponent {
     }
 
     this.modifiedRows.set(current);
+    this.hotInstance?.render();
   }
 
   onSave() {

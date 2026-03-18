@@ -313,3 +313,54 @@ h2 {
   display: block;
   width: 100%;
 }
+
+/* Global snackbar: centered, soft green, opaque with backdrop */
+
+/* Position the overlay wrapper to center the snackbar */
+.cdk-global-overlay-wrapper:has(.mat-mdc-snack-bar-container) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: none;
+}
+
+/* Semi-opaque backdrop behind snackbar so content is not visible through it */
+.cdk-global-overlay-wrapper:has(.mat-mdc-snack-bar-container)::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 0;
+  pointer-events: auto;
+}
+
+/* Center the snackbar overlay pane */
+.cdk-global-overlay-wrapper .cdk-overlay-pane:has(.mat-mdc-snack-bar-container) {
+  position: static !important;
+  margin: 0 !important;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+/* Style the snackbar surface: soft green, opaque, prominent */
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  border: 1px solid #c3e6cb !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+  opacity: 1 !important;
+  min-width: 340px !important;
+  padding: 18px 28px !important;
+}
+
+.mat-mdc-snack-bar-container .mdc-snackbar__label {
+  color: #155724 !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-button.mat-mdc-snack-bar-action {
+  color: #0b5d1e !important;
+  font-weight: 600 !important;
+}

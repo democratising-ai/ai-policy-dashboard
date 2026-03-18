@@ -47,24 +47,28 @@ Repository settings are auto-detected from the GitHub Pages URL, or can be confi
 
 #### Website
 1. Navigate to a data table (e.g., Policy Analysis)
-2. Click "Add New Entry"
-3. Enter your GitHub Personal Access Token when prompted
-4. Fill out and submit the form — it commits directly to the repository
+2. Enable **Edit Mode** using the toggle in the action bar
+3. Click **"Authenticate"** and enter your GitHub Personal Access Token in the dialog
+4. You can now:
+   - **Add New Policy**: click "Add New Policy" to open the form and submit a new row
+   - **Edit inline**: modify cells directly in the table, then click "Save Changes"
+   - **Add New Column**: click "Add Column" to add a new column definition to the table
 
 ### How It Works
 
-1. User authenticates with a Personal Access Token
+1. User authenticates with a Personal Access Token via the token dialog
 2. Form submission triggers `GitHubService.addRowToTable()` or `updateRowInTable()`
-3. Service fetches current file content via GitHub API, parses JSON, adds/updates the row
-4. Service commits the updated file back to the repository
-5. GitHub Pages automatically rebuilds (if configured)
+3. Inline edits are batched and committed via `GitHubService.updateMultipleRows()`
+4. New columns are added via `GitHubService.addColumnToTable()`
+5. Each service method fetches current file content via GitHub API, parses JSON, applies changes, and commits the updated file
+6. GitHub Pages automatically rebuilds (if configured)
 
 ### Security Notes
 
-Personal Access Tokens are stored in `sessionStorage` and are cleared when the browser tab is closed. This is acceptable for public repositories, trusted users, and development/testing.
+Personal Access Tokens are stored in `localStorage` with a sliding 8-hour expiry — the token is automatically cleared after 8 hours of inactivity. Each interaction resets the expiry timer. This is acceptable for public repositories, trusted users, and development/testing.
 
 ### Troubleshooting
 
 - You must have write permissions on the repo
 - Ensure your token has the `repo` (or `public_repo`) scope
-- If the token has expired, generate a new one and re-enter it
+- If the token has expired (after 8 hours of inactivity), re-authenticate via the token dialog
